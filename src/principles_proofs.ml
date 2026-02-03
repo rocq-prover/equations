@@ -97,7 +97,7 @@ let autorewrite_one b =
          (if (Autorewrite.RewRule.rew_l2r r) then Equality.rewriteLR else Equality.rewriteRL)
        in
        Proofview.tclOR tac
-         (fun e -> if !debug then Feedback.msg_debug (str"failed"); aux rules)
+         (fun e -> debug (fun () -> str"failed"); aux rules)
   in aux rew_rules
 
 let revert_last =
@@ -518,7 +518,7 @@ let aux_ind_fun info chop nested unfp unfids p =
                 let before, after = List.chop ctxlen sign in
                 let newwhere = substl subst term in
                 let ctx = subst_rel_context 0 subst before in
-                if !Equations_common.debug then
+                if Equations_common.get_debug () then
                   Feedback.msg_debug (str" where " ++ str"term: " ++ pr_econstr_env env evd (where_term s) ++
                                       str " subst " ++ prlist_with_sep spc (Printer.pr_econstr_env env evd) subst ++
                                       str " final term " ++ pr_econstr_env env evd newwhere ++
@@ -529,7 +529,7 @@ let aux_ind_fun info chop nested unfp unfids p =
                   try PathMap.find w.where_path info.wheremap
                   with Not_found -> assert false
                 in
-                if !Equations_common.debug then
+                if Equations_common.get_debug () then
                   Feedback.msg_debug (str"Unfolded where " ++ str"term: " ++ pr_econstr_env env evd (where_term w) ++
                                       str" type: " ++ pr_econstr_env env evd w.where_type ++ str" assoc " ++
                                       pr_econstr_env env evd assoc);
@@ -543,7 +543,7 @@ let aux_ind_fun info chop nested unfp unfids p =
                 in
                 let newwhere = substl subst (where_term w) in
                 let ctx = subst_rel_context 0 subst before in
-                if !Equations_common.debug then
+                if Equations_common.get_debug () then
                   Feedback.msg_debug (str"Unfolded where substitution:  " ++
                                       prlist_with_sep spc (Printer.pr_econstr_env env evd) subst ++
                                       str"New where term" ++ Printer.pr_econstr_env env evd newwhere ++
@@ -564,7 +564,7 @@ let aux_ind_fun info chop nested unfp unfids p =
               with Not_found ->
                 error "Couldn't find associated args of where"
             in
-            if !debug then
+            if get_debug () then
               (let env = Global.env () in
                Feedback.msg_debug
                  (str"Found path " ++ str (Id.to_string wherepath) ++ str" where: " ++
@@ -587,7 +587,7 @@ let aux_ind_fun info chop nested unfp unfids p =
               tclTHEN acc
                 (Proofview.tclBIND (pf_constr_of_global ind)
                    (fun ind ->
-                      if !debug then
+                      if get_debug () then
                         (let env = Global.env () in
                          Feedback.msg_debug
                            (str"Type of induction principle for " ++ str (Id.to_string (where_id s)) ++ str": " ++
@@ -654,7 +654,7 @@ let pr_subgoals sigma goals =
 
 let observe_tac s tac =
   let open Proofview in
-  if not !debug then tac
+  if not (get_debug ()) then tac
   else
     tclENV >>= fun env ->
     tclEVARMAP >>= fun sigma ->
@@ -737,7 +737,7 @@ let ind_fun_tac is_rec f info fid nestedinfo progs =
        | [n] ->
          (* Try using regular induction instead *)
          let _ =
-           if !Equations_common.debug then
+           if Equations_common.get_debug () then
              Feedback.msg_debug
                (str "Proof of mutual induction principle is not guarded, trying induction")
          in
@@ -1189,7 +1189,7 @@ let prove_unfolding_sublemma info where_map f_cst funf_cst (subst, p, unfp) =
 let prove_unfolding_lemma info where_map f_cst funf_cst p unfp =
   enter_goal begin fun env sigma _ ->
   let () =
-    if !Equations_common.debug then
+    if Equations_common.get_debug () then
       let open Pp in
       let msg = Feedback.msg_debug in
       msg (str"Proving unfolding lemma of: ");

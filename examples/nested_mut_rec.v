@@ -9,6 +9,8 @@ From Equations.Prop Require Import Equations.
 From Stdlib Require Import Program Arith List Compare_dec.
 Import ListNotations.
 
+Scheme All for list.
+
 (** A nested recursive definition of terms with lists of terms *)
 
 Inductive term : Set :=

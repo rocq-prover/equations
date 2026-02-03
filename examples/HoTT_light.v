@@ -269,8 +269,8 @@ Proof. reduce. destruct X. destruct X0. destruct x0. reflexivity. Defined.
 
 Definition trans_co_eq_inv_arrow_morphism@{i j k} :
   ∀ (A : Type@{i}) (R : crelation@{i j} A),
-    Transitive R → Proper@{k j} (respectful@{i j k j k j} R
-    (respectful@{i j k j k j} Id (@flip@{k k k} _ _ Type@{j} arrow))) R.
+    Transitive R → Proper@{k j} (respectful@{i j k j} R
+    (respectful@{i j k j} Id (@flip@{k k k} _ _ Type@{j} arrow))) R.
 Proof. reduce. transitivity y. assumption. now destruct X1. Defined.
 #[local] Existing Instance trans_co_eq_inv_arrow_morphism.
 
@@ -461,7 +461,7 @@ Definition path2_contr {A} {H:Contr A} {x y : A} (p q : x = y) : p = q.
 Proof.
   assert (K : forall (r : x = y), r = path_contr x y).
   intro r; destruct r; symmetry; now apply concat_Vp.
-  apply (transitivity (y:=path_contr x y)).
+  refine (transitivity (y := path_contr x y) _ _).
   - apply K.
   - symmetry; apply K.
 Defined.

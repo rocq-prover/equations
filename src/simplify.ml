@@ -394,7 +394,7 @@ type t = string option * (Environ.env -> Evd.evar_map ref -> goal -> open_term *
 let make ?name f = (name, f)
 
 let apply (name, f) =
-  if !Equations_common.debug then
+  if Equations_common.get_debug () then
     fun env evd gl ->
       let () = check_goal ~where:"precondition" ?name env !evd gl in
       let ((ngl, c), continue, map) = f env evd gl in

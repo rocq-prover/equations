@@ -12,9 +12,8 @@ open EConstr
 val derive_noConfusion_package :
   pm:Declare.OblState.t ->
   Environ.env ->
-  Evd.evar_map ->
   poly:PolyFlags.t ->
-  Names.inductive * EConstr.EInstance.t ->
+  Names.inductive ->
   Names.Id.t ->
   prefix:string ->
   tactic:unit Proofview.tactic ->

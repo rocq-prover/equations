@@ -121,6 +121,7 @@ End MapAll.
 
 Definition StoreTy := list Ty.
 
+Scheme All for All.
 Inductive Val : Ty -> StoreTy -> Set :=
 | val_unit {Σ} : Val unit Σ
 | val_true {Σ} : Val bool Σ

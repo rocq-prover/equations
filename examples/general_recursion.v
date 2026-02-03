@@ -166,7 +166,7 @@ Time Check (@eq_refl _ (fact1001) <: factN 1001 = fact1001).
 (** It takes [0.8sec] using [vm_compute]. *)
 
 (** An alternative is to use the total relation directly. *)
-
+#[obligations]
 Equations factN' (n : N) : N by wf n (@total_relation N) :=
 | N0 => 1;
 | Npos n => (Npos n * factN' (Pos.pred_N n)).

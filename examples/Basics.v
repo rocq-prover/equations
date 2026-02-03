@@ -162,6 +162,7 @@ Create HintDb lt.
 #[local] Hint Resolve Nat.lt_succ_diag_r : lt.
 
 (** The [by wf n lt] annotation indicates the kind of well-founded recursion we want. *)
+
 Equations testn (n : nat) : nat by wf n lt :=
 testn 0 := 0 ;
 testn (S n) with testn n => {
@@ -374,6 +375,7 @@ vmap' f (cons a v) := cons (f a) (vmap' f v).
 Transparent vmap'.
 
 (** The same, using well-founded recursion on [n]. *)
+
 Equations vmap {A B} (f : A -> B) {n} (v : vector A n) : vector B n by wf n :=
 vmap f (n:=?(O)) nil := nil ;
 vmap f (cons a v) := cons (f a) (vmap f v).
@@ -485,7 +487,7 @@ Generalizable All Variables.
 
 Opaque vmap. Opaque vtail. Opaque nth.
 
-Lemma nth_vmap `(v : vector A n) `(fn : A -> B) (f : fin n) : nth (vmap fn v) f = fn (nth v f).
+Lemma nth_vmap {A : Type} `(v : vector A n) `(fn : A -> B) (f : fin n) : nth (vmap fn v) f = fn (nth v f).
 Proof. revert B fn. funelim (nth v f); intros; now simp nth vmap. Qed.
 
 Lemma nth_vtail `(v : vector A (S n)) (f : fin n) : nth (vtail v) f = nth v (fs f).
