@@ -21,7 +21,8 @@ val equations_derive_equations : bool ref
 val equations_derive_eliminator : bool ref
 val equations_obligations : unit -> bool
 
-val debug : bool ref
+val get_debug : unit -> bool
+val debug : (unit -> Pp.t) -> unit
 val equations_debug : (unit -> Pp.t) -> unit
 
 val equations_category : CWarnings.category
@@ -463,7 +464,7 @@ val splay_prod_n_assum : env -> Evd.evar_map -> int -> types -> rel_context * ty
 
 (* Universes *)
 val nonalgebraic_universe_level_of_universe :
-  Environ.env -> Evd.evar_map -> ESorts.t -> Evd.evar_map * Univ.Level.t * ESorts.t
+  Environ.env -> Evd.evar_map -> ESorts.t -> Evd.evar_map * Univ.Universe.t * ESorts.t
 val instance_of :
   Environ.env ->
   Evd.evar_map ->

@@ -213,7 +213,7 @@ let typecheck_map env evars { src_ctx = ctx; map_inst =  subst; tgt_ctx = ctx' }
   in ()
 
 let check_ctx_map ?(unsafe = false) env evars map =
-  if !Equations_common.debug && not unsafe then
+  if Equations_common.get_debug () && not unsafe then
     try typecheck_map env evars map; map
     with Pretype_errors.PretypeError (env, sigma, Pretype_errors.TypingError e) ->
       errorlabstrm
@@ -411,7 +411,7 @@ let make_permutation ?(env = Global.env ()) (sigma : Evd.evar_map) map1 map2 : c
     in aux len []
   in
   let ctxmap = mk_ctx_map env sigma ctx1 pats ctx2 in
-  if !debug then Feedback.msg_debug Pp.(str"Permutation ctxmap: " ++ pr_context_map env sigma ctxmap ++
+  if get_debug () then Feedback.msg_debug Pp.(str"Permutation ctxmap: " ++ pr_context_map env sigma ctxmap ++
     str" of " ++ pr_context_map env sigma map1 ++ str " and " ++ pr_context_map env sigma map2);
   ctxmap
 
@@ -658,7 +658,7 @@ let check_eq_context_nolet env sigma snd fst =
 let compose_subst ?(unsafe = false) env ?(sigma=Evd.empty) snd fst =
   let { src_ctx = g; map_inst = p; tgt_ctx = d } = fst in
   let { src_ctx = g'; map_inst = p'; tgt_ctx = d' } = snd in
-  if !Equations_common.debug && not unsafe then check_eq_context_nolet env sigma snd fst;
+  if Equations_common.get_debug () && not unsafe then check_eq_context_nolet env sigma snd fst;
   mk_ctx_map ~unsafe env sigma g' (specialize_pats sigma p' p) d
 (*     (g', (specialize_pats p' p), d) *)
 

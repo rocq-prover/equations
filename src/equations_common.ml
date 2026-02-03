@@ -106,24 +106,24 @@ let _ = Goptions.declare_bool_option {
 let { Goptions.get = equations_obligations } =
   Goptions.declare_bool_option_and_ref
     ~key:["Equations";"Obligations"]
-    ~value:true
+    ~value:false
     ()
 
 (* Debugging infrastructure. *)
 
-let debug = ref false
+let debug_flag, debug = CDebug.create_full ~name:"equations" ()
+let get_debug () = CDebug.get_flag debug_flag
+let equations_debug s = debug s
 
-let _ = Goptions.declare_bool_option {
-  Goptions.optdepr  = None;
+let depr_equations_debug = Deprecation.make ~since:"equations v1.3.2" ()
+
+let () = Goptions.declare_bool_option {
+  Goptions.optdepr  = Some depr_equations_debug;
   Goptions.optstage = Summary.Stage.Interp;
   Goptions.optkey   = ["Equations"; "Debug"];
-  Goptions.optread  = (fun () -> !debug);
-  Goptions.optwrite = (fun b -> debug := b)
+  Goptions.optread  = (fun () -> get_debug ());
+  Goptions.optwrite = (fun b -> CDebug.set_flag debug_flag b);
 }
-
-let equations_debug s =
-  if !debug then
-    Feedback.msg_debug (s ())
 
 let pp   x = Pp.pp_with !Topfmt.std_ft x
 
@@ -275,8 +275,9 @@ let make_definition ?(check = true) ?opaque ?(poly=PolyFlags.default) evm ?types
       in
       Typing.check_actual_type env evm bj t
   in
-  let evm = Evd.minimize_universes evm in
   let evm0 = evm in
+  let evm = UnivVariances.register_universe_variances_of env evm ?typ:types b in
+  let evm = Evd.minimize_universes ~collapse_sort_variables:(PolyFlags.collapse_sort_variables poly) evm in
   let to_constr c = collapse_term_qualities (Evd.ustate evm) (EConstr.to_constr evm c) in
   let body = to_constr b in
   let typ = Option.map to_constr types in
@@ -287,7 +288,7 @@ let make_definition ?(check = true) ?opaque ?(poly=PolyFlags.default) evm ?types
   in
   let used = Univ.Level.Set.union used used' in
   let evm = Evd.restrict_ustate evm used in
-  let univs = Evd.univ_entry ~poly evm in
+  let univs = Evd.univ_entry ~poly ?variances:(if PolyFlags.cumulative poly then Some Infer_variances else None) evm in
   evm0, evm, Declare.definition_entry ~univs ?types:typ body
 
 let declare_constant ?check id body ty ~poly ~kind evd =
@@ -295,7 +296,7 @@ let declare_constant ?check id body ty ~poly ~kind evd =
   let cst = Declare.declare_constant ~name:id (Declare.DefinitionEntry ce) ~kind in
   Flags.if_verbose Feedback.msg_info (str((Id.to_string id) ^ " is defined"));
   if PolyFlags.univ_poly poly then
-    let cstr = EConstr.(mkConstU (cst, EInstance.make (UVars.UContext.instance (Evd.to_universe_context evm)))) in
+    let cstr = EConstr.(mkConstU (cst, EInstance.make (UVars.Instance.of_level_instance (UVars.UContext.instance (Evd.to_universe_context evm))))) in
     cst, (evm0, cstr)
   else cst, (evm0, EConstr.UnsafeMonomorphic.mkConst cst)
 
@@ -462,7 +463,7 @@ let mkapp env evdref t args =
     mkApp (c, args)
 
 let refresh_universes_strict env evd t = 
-  let evd', t' = Evarsolve.refresh_universes ~onlyalg:true (Some true) env !evd t in
+  let evd', t' = Evarsolve.refresh_universes ~onlyalg:true (Some true) ~status:Evd.univ_flexible env !evd t in
     evd := evd'; t'
     
 let mkEq env evd t x y = 
@@ -937,7 +938,7 @@ let assert_replacing id c ty =
 let observe s (tac : unit Proofview.tactic) =
   let open Proofview.Notations in
   let open Proofview in
-  if not !debug then tac
+  if not (get_debug ()) then tac
   else
     Goal.enter (fun gl ->
         let env = Goal.env gl in
@@ -1180,15 +1181,8 @@ let evd_comb1 f evd x =
 let nonalgebraic_universe_level_of_universe env sigma u =
   match ESorts.kind sigma u with
   | Sorts.Set | Sorts.Prop | Sorts.SProp ->
-    sigma, Univ.Level.set, u
-  | Sorts.Type u0 | GSort (_, u0) | Sorts.VSort (_, u0) ->
-    match Univ.Universe.level u0 with
-    | Some l -> Evd.make_nonalgebraic_variable sigma l, l, u
-    | None ->
-      let sigma, l = Evd.new_univ_level_variable Evd.univ_flexible sigma in
-      let ul = ESorts.make @@ Sorts.sort_of_univ @@ Univ.Universe.make l in
-      let sigma = Evd.set_leq_sort sigma u ul in
-      sigma, l, ul
+    sigma, Univ.Universe.type0, u
+  | Sorts.Type u0 | Sorts.QSort (_, u0) -> sigma, u0, u
 
 let instance_of env sigma ?argu goalu =
   let sigma, goall, goalu = nonalgebraic_universe_level_of_universe env sigma goalu in

@@ -134,7 +134,8 @@ let depcase ~poly ((mind, i as ind), u) =
   let args, params = List.chop (List.length ctx - nparams) ctx in
   let nargs = List.length args in
   let indapp = mkApp (mkIndU (ind,u), extended_rel_vect 0 ctx) in
-  let evd = ref (Evd.from_env (Global.env())) in
+  let env = Global.env() in
+  let evd = ref (Evd.from_env env) in
   let s = evd_comb0 (Evd.new_sort_variable Evd.univ_flexible) evd in
   let pred = it_mkProd_or_LetIn (mkSort s)
     (make_assum (indna Anonymous) indapp :: args)
@@ -186,9 +187,10 @@ let depcase ~poly ((mind, i as ind), u) =
         :: ((Array.rev_to_list branches)
             @ (make_assum (make_annot (Name (Id.of_string "P")) (Retyping.relevance_of_sort s)) pred :: ctx)))
   in
-  let () = evd := Evd.minimize_universes !evd in
-  let univs = Evd.univ_entry ~poly !evd in
-  let ce = Declare.definition_entry ~univs (EConstr.to_constr !evd body) in
+  let sigma = UnivVariances.register_universe_variances_of env !evd body in
+  let sigma = Evd.minimize_universes ~collapse_sort_variables:(PolyFlags.collapse_sort_variables poly) sigma in
+  let univs = Evd.univ_entry ~poly sigma in
+  let ce = Declare.definition_entry ~univs (EConstr.to_constr sigma body) in
   let kn =
     let id = add_suffix indid "_dep_elim" in
       GlobRef.ConstRef (Declare.declare_constant ~name:id
@@ -435,7 +437,7 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
             Syntax.Pre_clause (loc, lhs, Some rhs))
         in Proofview.tclUNIT (List.map make_clause patterns)
     end >>= fun clauses ->
-    if !debug then
+    if get_debug () then
     Feedback.msg_info (str "Generated clauses: " ++ fnl() ++ Syntax.pr_preclauses env sigma clauses);
 
     (* Produce dummy data for covering. *)
@@ -477,7 +479,7 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
       in
       let c = beta_applist !evd (c, args) in
       let c = Vars.substl (List.rev rev_subst) c in
-      if !Equations_common.debug then
+      if Equations_common.get_debug () then
         Feedback.msg_debug (str "refining with" ++ Printer.pr_econstr_env env !evd c);
         (!evd, c)
     end

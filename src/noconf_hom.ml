@@ -53,7 +53,14 @@ let get_forced_positions sigma args concl =
   in
   List.rev (List.fold_left_i is_forced 1 [] args)
 
-let derive_noConfusion_package ~pm env sigma ~poly (ind, u) indid ~prefix ~tactic cstNoConf =
+let derive_noConfusion_package ~pm env ~poly ind indid ~prefix ~tactic cstNoConf =
+  let sigma = Evd.from_env env in
+  let noid = add_prefix "noConfusion" (add_prefix prefix (add_prefix "_" indid))
+  and packid = add_prefix "NoConfusion" (add_prefix prefix (add_prefix "Package_" indid)) in
+  let tc = Typeclasses.class_info_exn env sigma (Lazy.force coq_noconfusion_class) in
+  let sigma, noconf = Evd.fresh_global ~rigid:Evd.univ_rigid env sigma (GlobRef.ConstRef cstNoConf) in
+  let sigma, noconfcl = new_global sigma tc.Typeclasses.cl_impl in
+  let inst, u = destInd sigma noconfcl in
   let mindb, oneind = Global.lookup_inductive ind in
   let ctx = List.map of_rel_decl oneind.mind_arity_ctxt in
   let u = Inductiveops.get_template_instance mindb u in
@@ -63,12 +70,6 @@ let derive_noConfusion_package ~pm env sigma ~poly (ind, u) indid ~prefix ~tacti
     if prefix = "" then mindb.mind_nparams
     else List.length ctx in
   let argsvect = rel_vect 0 len in
-  let noid = add_prefix "noConfusion" (add_prefix prefix (add_prefix "_" indid))
-  and packid = add_prefix "NoConfusion" (add_prefix prefix (add_prefix "Package_" indid)) in
-  let tc = Typeclasses.class_info_exn env sigma (Lazy.force coq_noconfusion_class) in
-  let sigma, noconf = Evd.fresh_global ~rigid:Evd.univ_rigid env sigma (GlobRef.ConstRef cstNoConf) in
-  let sigma, noconfcl = new_global sigma tc.Typeclasses.cl_impl in
-  let inst, u = destInd sigma noconfcl in
   let noconfterm = mkApp (noconf, argsvect) in
   let ctx, argty =
     let ty = Retyping.get_type_of env sigma noconf in
@@ -267,12 +268,7 @@ let derive_no_confusion_hom ~pm env sigma0 ~poly (ind,u as indu) =
     (* The principles are now shown, let's prove this forms an equivalence *)
     Global.set_strategy (Conv_oracle.EvalConstRef program_cst) Conv_oracle.transparent;
     let env = Global.env () in
-    let sigma = Evd.from_env env in
-    let sigma, indu = Evd.fresh_global
-        ~rigid:Evd.univ_rigid (* Universe levels of the inductive family should not be tampered with. *)
-        env sigma (GlobRef.IndRef ind) in
-    let indu = destInd sigma indu in
-    (), derive_noConfusion_package ~pm env sigma ~poly indu indid
+    (), derive_noConfusion_package ~pm env ~poly ind indid
       ~prefix:"Hom" ~tactic:(noconf_hom_tac ()) program_cst
  in
  let prog = Splitting.make_single_program env evd data.Covering.flags p ctxmap splitting None in

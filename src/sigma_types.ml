@@ -139,7 +139,7 @@ let telescope env evd = function
             let sigty = mkAppG env evd (Lazy.force coq_sigma) [|t; pred|] in
             let _, u = destInd !evd (fst (destApp !evd sigty)) in
             let _, ua = UVars.Instance.to_array (EInstance.kind !evd u) in
-            let l = Sorts.sort_of_univ @@ Univ.Universe.make ua.(0) in
+            let l = Sorts.sort_of_univ @@ ua.(0) in
             (* Ensure that the universe of the sigma is only >= those of t and pred *)
             let open UnivProblem in
             let enforce_leq env sigma t cstr =
@@ -209,9 +209,8 @@ let sigmaize ?(liftty=0) env0 evd pars f =
   in
   let pred = it_mkLambda_or_LetIn pred pars in
   let _ = e_type_of env0 evd pred in
-  let () = evd := Evd.minimize_universes !evd in
-    (argtyp, pred, pars, indices,
-     indexproj, valproj, valsig, tysig)
+  (argtyp, pred, pars, indices,
+   indexproj, valproj, valsig, tysig)
 
 let ind_name ind = Nametab.basename_of_global (GlobRef.IndRef ind)
 
@@ -233,11 +232,10 @@ let build_sig_of_ind env sigma (ind,u as indu) =
   let parapp = mkApp (mkIndU indu, extended_rel_vect 0 pars) in
   let fullapp = mkApp (mkIndU indu, extended_rel_vect 0 ctx) in
   let evd = ref sigma in
-  let idx, pred, pars, _, _, _, valsig, _ = 
-    sigmaize env evd pars parapp 
-  in
-  let sigma = !evd in
-    sigma, pred, pars, fullapp, valsig, ctx, lenargs, idx
+  let idx, pred, pars, _, _, _, valsig, _ = sigmaize env evd pars parapp in
+  let sigma = UnivVariances.register_universe_variances_of env !evd pred in
+  let sigma = Evd.minimize_universes sigma in
+  sigma, pred, pars, fullapp, valsig, ctx, lenargs, idx
 
 let nf_econstr sigma c = Evarutil.nf_evar sigma c
 
@@ -246,7 +244,6 @@ let declare_sig_of_ind env sigma ~poly (ind,u) =
     build_sig_of_ind env sigma (ind, u) in
   let indid = ind_name ind in
   let simpl = Tacred.simpl env sigma in
-  let sigma = Evd.minimize_universes sigma in
   let fullapp = nf_econstr sigma fullapp in
   let idx = nf_econstr sigma idx in
   let _, (sigma, indsig) =
@@ -260,7 +257,7 @@ let declare_sig_of_ind env sigma ~poly (ind,u) =
     let term = it_mkLambda_or_LetIn valsig (vbinder :: ctx) 
     in
     (* let rettype = mkApp (mkConst indsig, extended_rel_vect (succ lenargs) pars) in *)
-      declare_constant pack_id (simpl term)
+    declare_constant pack_id (simpl term)
 	None (* (Some (it_mkProd_or_LetIn rettype (vbinder :: ctx))) *)
         ~poly sigma
 	~kind:Decls.(IsDefinition Definition)

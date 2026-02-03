@@ -1177,7 +1177,7 @@ let computations env evd alias refine p eqninfo : computation list =
      in
      let inst, wheres = List.fold_right where_comp where ([],[]) in
      let ctx = compose_subst env ~sigma:evd lhs prob in
-     if !Equations_common.debug then
+     if Equations_common.get_debug () then
        Feedback.msg_debug Pp.(str"where_instance: " ++ prlist_with_sep spc (Printer.pr_econstr_env env evd) inst);
      let envlhs = (push_rel_context lhs.src_ctx env) in 
      let envwhere = push_rel_context (where_context where) envlhs in
@@ -1188,7 +1188,7 @@ let computations env evd alias refine p eqninfo : computation list =
        substitute_aliases evd fsubst c'
      in
      let c' = map_rhs (fun c -> fn c) (fun x -> x) c in
-     if !Equations_common.debug then
+     if Equations_common.get_debug () then
       (Feedback.msg_debug Pp.(str"substituting in: " ++ pr_splitting_rhs ~verbose:true envlhs envwhere evd lhs c ty);
       Feedback.msg_debug Pp.(str"substituted: " ++ pr_splitting_rhs ~verbose:true envlhs envlhs evd lhs c' ty));
      let patsconstrs = pattern_instance ctx in
@@ -1244,24 +1244,25 @@ let declare_funelim ~pm info env evd is_rec protos progs
   let id = Id.of_string info.base_id in
   let leninds = List.length inds in
   let elim = comb in
-  let elimc, elimty =
-    let elimty, uctx = Typeops.type_of_global_in_context (Global.env ()) elim in
-    let () = evd := Evd.from_env (Global.env ()) in
+  let sigma, elimc, elimty =
+    let env = (Global.env ()) in
+    let elimty, uctx = Typeops.type_of_global_in_context env elim in
+    let sigma = Evd.from_env env in
     if is_polymorphic info then
       (* We merge the contexts of the term and eliminator in which
          ind_stmts and all_stmts are derived, universe unification will
          take care of unifying the eliminator's fresh instance with the
          universes of the constant and the functional induction lemma. *)
-      let () = evd := Evd.merge_ustate !evd info.term_ustate in
-      let () = evd := Evd.merge_ustate !evd ectx in
-      let sigma, elimc = Evd.fresh_global (Global.env ()) !evd elim in
+      let sigma = Evd.merge_ustate sigma info.term_ustate in
+      let sigma = Evd.merge_ustate sigma ectx in
+      let sigma, elimc = Evd.fresh_global env sigma elim in
       let elimty = Retyping.get_type_of env sigma elimc in
-      let () = evd := sigma in
-      elimc, elimty
+      sigma, elimc, elimty
     else (* If not polymorphic, we just use the global environment's universes for f and elim *)
       (let elimc = constr_of_global_univ elim EInstance.empty in
-       elimc, of_constr elimty)
+       sigma, elimc, of_constr elimty)
   in
+  let () = evd := sigma in
   let nargs, newty =
     compute_elim_type env evd info.user_obls is_rec protos kn leninds ind_stmts all_stmts
                       sign app elimty
@@ -1297,6 +1298,7 @@ let declare_funelim ~pm info env evd is_rec protos progs
   let newty = collapse_term_qualities (Evd.ustate !evd) (EConstr.to_constr !evd newty) in 
   let cinfo = Declare.CInfo.make ~name:(Nameops.add_suffix id "_elim") ~typ:newty () in
   let info = Declare.Info.make ~poly:info.poly ~scope:info.scope ~hook:(Declare.Hook.make hookelim) ~kind:(Decls.IsDefinition info.decl_kind) () in
+  let () = debug Pp.(fun () -> str"sigma at add_def of elim: " ++ Termops.pr_evar_map ~with_univs:true None env !evd) in
   let pm = Declare.Obls.add_definition ~pm ~cinfo ~info ~tactic ~opaque:false
       ~uctx:(Evd.ustate !evd) [||] in
   pm
@@ -1501,9 +1503,17 @@ let unfold_fix =
          | _ -> tclUNIT ())
       | _ -> tclUNIT ())
 
+let universes_of_entries sigma x =
+  let univs_of_entry acc ((_, arity, _, constys), _, _) =
+    let acc = universes_of_constr ~init:acc sigma arity in
+    List.fold_left (fun univs c -> universes_of_constr ~init:univs sigma c)
+      acc constys
+  in
+  List.fold_left univs_of_entry (Sorts.QVar.Set.empty, Univ.Level.Set.empty) x
+
 let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
   let () =
-    if !Equations_common.debug then
+    if Equations_common.get_debug () then
       let open Pp in
       let msg = Feedback.msg_debug in
       msg (str"Definining principles of: " ++
@@ -1588,7 +1598,7 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
            mkApp (coq_ImpossibleCall evd, [| ty; nf_beta comp |])
       in
       let body = it_mkProd_or_LetIn b ctx in
-      if !Equations_common.debug then
+      if Equations_common.get_debug () then
         Feedback.msg_debug Pp.(str"Typing equation " ++ Printer.pr_econstr_env env !evd body);
       let _ = Equations_common.evd_comb1 (Typing.type_of env) evd body in
       body
@@ -1613,7 +1623,7 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
                  (applistc head (lift_constrs hypslen pats @ [c']))
                  hyps) ctx
           in
-          if !Equations_common.debug then
+          if Equations_common.get_debug () then
             Feedback.msg_debug Pp.(str"Typing constructor " ++ Printer.pr_econstr_env env !evd ty);
 
           Some ty
@@ -1632,24 +1642,19 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
     (fun i (f, c) -> i, f, CList.map_i (fun j x -> j, x) 1 c) 0 stmts
   in
   let all_stmts = List.concat (List.map (fun (f, c) -> c) stmts) in
+  let () = List.iter (fun (_, _, b, typ) ->
+               evd := UnivVariances.register_universe_variances_of env !evd ?typ b) all_stmts in
   let fnind_map = ref PathMap.empty in
-  let declare_one_ind (inds, univs, sorts) (i, (f, alias, path, sign, arity, pats, refs, refine), stmts) =
+  let declare_one_ind (inds, sorts) (i, (f, alias, path, sign, arity, pats, refs, refine), stmts) =
     let indid = Nameops.add_suffix (path_id path) "_graph" (* (if i == 0 then "_ind" else ("_ind_" ^ string_of_int i)) *) in
     let indapp = List.rev_map (fun x -> Constr.mkVar (Nameops.Name.get_id (get_name x))) sign in
     let () = fnind_map := PathMap.add path (indid,indapp) !fnind_map in
-    let constructors = CList.map_filter (fun (_, (_, _, _, n)) -> Option.map (to_constr !evd) n) stmts in
+    let constructors = CList.map_filter (fun (_, (_, _, _, n)) -> n) stmts in
     let consnames = CList.map_filter (fun (i, (r, _, _, n)) ->
       Option.map (fun _ ->
         let suff = (if r != Refine then "_equation_" else "_refinement_") ^ string_of_int i in
           Nameops.add_suffix indid suff) n) stmts
     in
-    let merge_universes_of_constr c =
-      Univ.Level.Set.union (snd (EConstr.universes_of_constr !evd c)) in
-    let univs = Univ.Level.Set.union (snd (universes_of_constr !evd arity)) univs in
-    let univs = Context.Rel.(fold_outside (Declaration.fold_constr merge_universes_of_constr) sign ~init:univs) in
-    let univs =
-      List.fold_left (fun univs c -> Univ.Level.Set.union (snd (universes_of_constr !evd (EConstr.of_constr c))) univs)
-        univs constructors in
     let ind_sort =
       match Retyping.get_sort_quality_of env !evd (it_mkProd_or_LetIn arity sign) with
       | QConstant QProp ->
@@ -1661,40 +1666,44 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
         let signlev = level_of_context env !evd ctx sorts in
         signlev
     in
-    let entry =
-      Entries.{ mind_entry_typename = indid;
-                mind_entry_arity = to_constr !evd (it_mkProd_or_LetIn (mkProd (anonR, arity,
-                                                                               mkSort (ESorts.make ind_sort))) sign);
-                mind_entry_consnames = consnames;
-                mind_entry_lc = constructors;
-              }
-    in ((entry, sign, arity) :: inds, univs, max_sort ind_sort sorts)
+    let full_arity = it_mkProd_or_LetIn (mkProd (anonR, arity, mkSort (ESorts.make ind_sort))) sign in
+    let entry = (indid, full_arity, consnames, constructors) in
+    ((entry, sign, arity) :: inds, max_sort ind_sort sorts)
   in
   let declare_ind () =
-    let inds, univs, sort = List.fold_left declare_one_ind ([], Univ.Level.Set.empty, Sorts.prop) ind_stmts in
-    let sigma = Evd.restrict_ustate !evd univs in
-    let sigma = Evd.minimize_universes sigma in
+    let inds, sort = List.fold_left declare_one_ind ([], Sorts.prop) ind_stmts in
+    let sigma = UnivVariances.register_universe_variances_of_inductive env !evd ~udecl:UState.default_univ_decl
+                  ~cumulative:(PolyFlags.cumulative info.poly) ~params:[]
+                  ~arities:(List.map (fun ((_, full_arity, _, _), _, _) -> full_arity) inds)
+                  ~constructors:(List.map (fun ((_, _, consnames, constys), _, _) -> consnames, constys) inds) in
+    let sigma = Evd.minimize_universes ~collapse_sort_variables:(PolyFlags.collapse_sort_variables info.poly) sigma in
+    let _qualities, univs = universes_of_entries sigma inds in
+    let sigma = Evd.restrict_ustate sigma univs in
     (* FIXME: try to implement a sane handling of universe state threading *)
-    let to_constr sigma c =
+    let to_constr c =
       collapse_term_qualities (Evd.ustate sigma) (EConstr.to_constr sigma c)
     in
     let inds =
-      List.rev_map (fun (entry, sign, arity) ->
-          Entries.{ entry with
-                    mind_entry_lc = List.map (to_constr sigma) (List.map of_constr entry.mind_entry_lc);
-                    mind_entry_arity =
-                      to_constr sigma (it_mkProd_or_LetIn (mkProd (anonR, arity,
-                                                                  mkSort (ESorts.make sort))) sign) })
+      List.rev_map (fun ((indid, _full_arity, consnames, constructors), sign, arity) ->
+          (* We refresh the sort of the whole inductives *)
+          let full_arity = it_mkProd_or_LetIn (mkProd (anonR, arity, mkSort (ESorts.make sort))) sign in
+          Entries.{
+              mind_entry_typename = indid;
+              mind_entry_arity = to_constr full_arity;
+              mind_entry_consnames = consnames;
+              mind_entry_lc = List.map to_constr constructors;
+          })
         inds
     in
-    let univs, ubinders = Evd.univ_entry ~poly sigma in
-    let usubst, uctx = match univs with
+    let univ_entry = Evd.univ_entry ~poly sigma in
+    let usubst, uctx = match univ_entry.UState.universes_entry_universes with
     | UState.Monomorphic_entry ctx ->
       let () = Global.push_context_set ctx in
       UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
-    | UState.Polymorphic_entry uctx ->
-      let uinst, auctx = UVars.abstract_universes uctx in
-      UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry auctx
+    | UState.Polymorphic_entry (uctx, _variances) ->
+       let cumul = if PolyFlags.cumulative poly then Some Entries.Infer_variances else None in
+       let uinst, auctx = UVars.abstract_universes uctx in
+       UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry (auctx, cumul)
     in
     let nf_univs c = CVars.subst_univs_level_constr usubst c in
     let inds =
@@ -1711,11 +1720,10 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
                 mind_entry_finite = Declarations.Finite;
                 mind_entry_params = []; (* (identifier * local_entry) list; *)
                 mind_entry_inds = inds;
-                mind_entry_variance = None;
               }
     in
     let () = Goptions.set_bool_option_value_gen ~locality:Goptions.OptLocal ["Elimination";"Schemes"] false in
-    let kn = DeclareInd.declare_mutual_inductive_with_eliminations inductive (univs, ubinders) [] in
+    let kn = DeclareInd.declare_mutual_inductive_with_eliminations inductive univ_entry [] in
     let () = Goptions.set_bool_option_value_gen ~locality:Goptions.OptLocal ["Elimination";"Schemes"] true in
     let sort = Inductiveops.top_allowed_sort (Global.env()) (kn,0) in
     let sort_suff = Elimschemes.elimination_suffix sort in

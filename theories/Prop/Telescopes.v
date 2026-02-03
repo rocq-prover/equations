@@ -20,7 +20,8 @@ Register ext as equations.tele.ext.
 
 Section TeleSigma.
   Universe i.
-
+  Set Warnings "+minimization-without-variances".
+  Set Debug "backtrace".
   Equations tele_sigma (t : tele@{i}) : Type@{i} :=
   tele_sigma (tip A) := A ; 
   tele_sigma (ext A B) := @sigma A (fun x => tele_sigma (B x)).
@@ -44,9 +45,9 @@ Section TeleSigma.
   tele_rel_app (tip A) (tip A') P a a' := P a a';
   tele_rel_app (ext A B) (ext A' B') P (a, b) (a', b') := tele_rel_app (B a) (B' a') (P a a') b b'.
 
-  Universes j k.
+  Universes j.
 
-  Equations tele_fn : tele@{i} -> Type@{j} -> Type@{k} :=
+  Equations tele_fn : tele@{i} -> Type@{j} -> Type@{max(i,j)} :=
   | tip A | concl := A -> concl;
   | ext A B | concl := forall x : A, tele_fn (B x) concl.
 
@@ -57,15 +58,15 @@ Section TeleSigma.
   Equations tele_measure (T : tele@{i}) (A : Type@{i}) (f : tele_fn T A) (R : A -> A -> Prop) : T -> T -> Prop :=
   tele_measure T C f R := fun x y => R (tele_MR T C f x) (tele_MR T C f y).
 
-  Equations tele_type : tele@{i} -> Type@{k} :=
+  Equations tele_type : tele@{i} -> Type@{j+1} :=
   | tip A := A -> Type@{j};
   | ext A B := forall x : A, tele_type (B x).
 
-  Equations tele_type_app (T : tele@{i}) (P : tele_type T) (x : tele_sigma T) : Type@{k} :=
+  Equations tele_type_app (T : tele@{i}) (P : tele_type@{} T) (x : tele_sigma T) : Type@{j} :=
   tele_type_app (tip A) P a := P a;
   tele_type_app (ext A B) P (a, b) := tele_type_app (B a) (P a) b.
 
-  Equations tele_forall (T : tele@{i}) (P : tele_type T) : Type@{k} :=
+  Equations tele_forall (T : tele@{i}) (P : tele_type T) : Type@{j} :=
   | tip A | P := forall x : A, P x;
   | ext A B | P := forall x : A, tele_forall (B x) (P x).
 
@@ -73,11 +74,11 @@ Section TeleSigma.
   | tip A | P | Q := forall x : A, P x -> Q x;
   | ext A B | P | Q := forall x : A, tele_forall_impl (B x) (P x) (Q x).
 
-  Equations tele_forall_app (T : tele@{i}) (P : tele_type T) (f : tele_forall T P) (x : T) : tele_type_app T P x :=
+  Equations tele_forall_app@{} (T : tele@{i}) (P : tele_type T) (f : tele_forall T P) (x : T) : tele_type_app T P x :=
   tele_forall_app (tip A)   P f x := f x;
   tele_forall_app (ext A B) P f x := tele_forall_app (B x.1) (P x.1) (f x.1) x.2.
 
-  Equations tele_forall_type_app (T : tele@{i}) (P : tele_type T)
+  Equations tele_forall_type_app@{} (T : tele@{i}) (P : tele_type T)
             (fn : forall t, tele_type_app T P t) : tele_forall T P :=
   | (tip A) | P | fn := fn;
   | ext A B | P | fn := fun a : A => tele_forall_type_app (B a) (P a) (fun b => fn (a, b)).
@@ -88,7 +89,7 @@ Section TeleSigma.
     induction T; simpl. reflexivity. cbn. intros [a b]. simpl. rewrite H. reflexivity.
   Defined.
 
-  Equations tele_forall_uncurry (T : tele@{i}) (P : T -> Type@{j}) : Type@{k} :=
+  Equations tele_forall_uncurry (T : tele@{i}) (P : T -> Type@{j}) : Type@{max(i, j)} :=
   | tip A   | P := forall x : A, P x;
   | ext A B | P := forall x : A, tele_forall_uncurry (B x) (fun y : tele_sigma (B x) => P (x, y)).
 
@@ -131,26 +132,28 @@ Register tele_sigma as equations.tele.interp.
 Register tele_measure as equations.tele.measure.
 
 #[export]
-Instance wf_tele_measure@{i j k}
-         {T : tele@{i}} (A : Type@{j}) (f : tele_fn@{i j k} T A) (R : A -> A -> Prop) :
-  WellFounded R -> WellFounded (tele_measure@{i j k} T A f R).
+Instance wf_tele_measure@{i j}
+         {T : tele@{i}} (A : Type@{j}) (f : tele_fn@{i j} T A) (R : A -> A -> Prop) :
+  WellFounded R -> WellFounded (tele_measure@{i j} T A f R).
 Proof.
   intros. apply Program.Wf.measure_wf. apply H.
 Defined.
 
 Section Fix.
-  Universe i j k.
+  Universe i j.
   Context {T : tele@{i}} (R : T -> T -> Prop).
+  Context (P : tele_type@{i j} T).
+
+(*Inspect 5.  (* (forall x : A, (forall y : A, R y x -> P y) -> P x) -> forall x : A, P x *)
+  Set Debug "univMinim".
+  Set Debug "ustate".*)
+  Definition tele_fix_functional_type : Type@{max(i,j)} :=
+    tele_forall_uncurry@{i max(i,j)} T (fun x : T =>
+      ((tele_forall_uncurry@{i j} T (fun y : T =>
+         R y x -> tele_type_app@{i j} T P y))) ->
+      tele_type_app@{i j} T P x).
+
   Context (wf : WellFounded R).
-  Context (P : tele_type@{i j k} T).
-
-  (* (forall x : A, (forall y : A, R y x -> P y) -> P x) -> forall x : A, P x *)
-  Definition tele_fix_functional_type :=
-    tele_forall_uncurry T (fun x =>
-      ((tele_forall_uncurry T (fun y =>
-         R y x -> tele_type_app T P y))) ->
-      tele_type_app T P x).
-
   Context (fn : tele_fix_functional_type).
 
   Lemma tele_fix : tele_forall T P.
@@ -178,24 +181,25 @@ Lemma poly_f_equal@{i j} : forall (A : Type@{i}) (B : Type@{j}) (f : A -> B) (x 
 Proof. intros. destruct H. reflexivity. Defined.
 
 Section FixUnfold.
-  Universes i j k.
+  Universes i j.
 
   Context {T : tele@{i}} (x : T) (R : T -> T -> Prop).
   Context (wf : well_founded R).
-  Context (P : tele_type@{i j k} T).
+  Context (P : tele_type@{i j} T).
 
   (* (forall x : A, (forall y : A, R y x -> P y) -> P x) -> forall x : A, P x *)
-  Context (fn : tele_fix_functional_type@{i j k} R P).
+  Context (fn : tele_fix_functional_type@{i j} R P).
 
-  Lemma tele_fix_unfold :
-    tele_forall_app T P (tele_fix R wf P fn) x =
+
+  Lemma tele_fix_unfold@{|+} :
+    tele_forall_app T P (tele_fix R P wf fn) x =
     tele_forall_pack T _ fn x
-                     (tele_forall_unpack T _ (fun y _ => tele_forall_app T P (tele_fix R wf P fn) y)).
+                     (tele_forall_unpack T _ (fun y _ => tele_forall_app T P (tele_fix R P wf fn) y)).
   Proof.
     intros. unfold tele_fix, Subterm.FixWf, Fix.
-    rewrite tele_forall_app_type@{i j k}. destruct (wellfounded x). simpl.
-    apply poly_f_equal@{k k}. apply poly_f_equal@{k k}. extensionality y. extensionality h.
-    rewrite tele_forall_app_type@{i j k}. apply poly_f_equal@{k k}. apply Subterm.Acc_pi.
+    rewrite tele_forall_app_type@{i j}. destruct (wellfounded x). simpl.
+    apply poly_f_equal. apply poly_f_equal. extensionality y. extensionality h.
+    rewrite tele_forall_app_type@{i j}. apply poly_f_equal. apply Subterm.Acc_pi.
   Defined.
 
 End FixUnfold.
