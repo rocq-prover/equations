@@ -21,6 +21,8 @@ Local Open Scope equations_scope.
 
 Local Set Keyed Unification.
 
+Unset Universe Polymorphism.
+
 (** Support for the [Equations] command.
    These tactics implement the necessary machinery to solve goals produced by the
    [Equations] command relative to dependent pattern-matching.

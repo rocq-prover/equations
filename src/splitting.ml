@@ -603,7 +603,7 @@ let term_of_tree env0 isevar sort tree =
         (* TODO This context should be the same as (pi1 csubst). We could
            * either optimize (but names in [csubst] are worse) or just insert
            * a sanity-check. *)
-        if !Equations_common.debug then begin
+        if Equations_common.get_debug () then begin
           let open Feedback in
           let ctx = cut_ctx @ new_ctx @ ctx' in
           msg_debug(str"Simplifying term:");
@@ -619,7 +619,7 @@ let term_of_tree env0 isevar sort tree =
           evd_comb0 (fun sigma -> Typing.type_of env sigma ty) evd
         in
         let ((hole, c), _, lsubst) = Simplify.apply_simplification_fun simpl_step env evd (cut_ctx @ new_ctx @ ctx', ty, sort) in
-        if !debug then
+        if Equations_common.get_debug () then
           begin
             let open Feedback in
             msg_debug (str"Finished simplifying");
@@ -701,7 +701,7 @@ let term_of_tree env0 isevar sort tree =
       let term = EConstr.mkApp (case, Array.of_list to_apply) in
       let term = EConstr.it_mkLambda_or_LetIn term ctx in
       let typ = it_mkProd_or_subst env evm ty ctx in
-      let () = if !Equations_common.debug then check_typed ~where:"splitting" env !evd term in
+      let () = if Equations_common.get_debug () then check_typed ~where:"splitting" env !evd term in
       let term = Evarutil.nf_evar !evd term in
       !evd, term, typ
   in
@@ -1094,7 +1094,7 @@ let solve_equations_obligations ~pm (flags : Equations_common.flags) recids loc 
   let env = Global.env () in
   let types =
     List.map (fun (ev, evi) ->
-        if !Equations_common.debug then
+        if Equations_common.get_debug () then
           Feedback.msg_debug (str"evar type" ++ Printer.pr_econstr_env env sigma (Evd.evar_concl evi));
         let section_length = List.length (named_context env) in
         let evcontext = Evd.evar_context evi in
@@ -1169,9 +1169,10 @@ let gather_fresh_context sigma u octx =
       Sorts.QVar.Set.empty qarr
   in
   let levels =
-    Array.fold_left (fun ctx' l ->
-        if not (Univ.Level.Set.mem l univs) then Univ.Level.Set.add l ctx'
-        else ctx')
+    Array.fold_left (fun ctx' u ->
+      let levels = Univ.Universe.levels u in
+      let levels = Univ.Level.Set.diff levels univs in
+      Univ.Level.Set.union levels ctx')
       Univ.Level.Set.empty uarr
   in
   (qualities, levels), (UVars.AbstractContext.instantiate u octx)
@@ -1185,8 +1186,6 @@ let solve_equations_obligations_program ~pm (flags : flags) recids loc i sigma h
   let env = Global.env () in
   let sigma, term = get_fresh sigma (Equations_common.logic_top_intro) in
   let sigma, ty = get_fresh sigma (Equations_common.logic_top) in
-  let sigma = Evd.minimize_universes sigma in
-  let sigma = Evd.nf_univ_variables sigma in (* XXX is this useful after minimize? *)
   let sigma = Evarutil.nf_evar_map_undefined sigma in
   let oblsid = Nameops.add_suffix i "_obligations" in
   let oblsinfo, (evids, cmap), term, ty =
@@ -1209,6 +1208,7 @@ let solve_equations_obligations_program ~pm (flags : flags) recids loc i sigma h
       (id, ty, src, status, deps, Some tac))
       oblsinfo
   in
+  (* let sigma = Evd.nf_univ_variables sigma in (\* XXX is this useful after minimize? *\) *)
   let hook { Declare.Hook.S.uctx; obls; _ } pm =
   (* let hook uctx evars locality gr = *)
     (* let l =
@@ -1220,7 +1220,7 @@ let solve_equations_obligations_program ~pm (flags : flags) recids loc i sigma h
       let t = EConstr.of_constr (List.assoc_f Id.equal id obls) in
       let hd, args = decompose_app !evd t in
       if EConstr.isRef !evd hd then
-        (if !Equations_common.debug then
+        (if Equations_common.get_debug () then
            Feedback.msg_debug
              (str"mapping obligation to " ++ Printer.pr_econstr_env env !evd t ++ Id.print id);
          let cst, i = EConstr.destConst !evd hd in
@@ -1305,16 +1305,25 @@ let define_programs (type a) ~pm env evd udecl is_recursive fixprots (flags : fl
     hook ~pm p term_info
   in
   let all_hook ~pm hook recobls sigma =
-    let sigma = Evd.minimize_universes sigma in
+    let proofs = List.map (fun p -> p.program_term, program_type p) programs in
+    debug Pp.(fun () -> str"all_hook: evd = " ++ Termops.pr_evar_map None (Global.env ()) !evd);
+    debug Pp.(fun () -> str"all_hook: sigma = " ++ Termops.pr_evar_map None (Global.env ()) sigma);
+    (* let ustate = UState.demote_global_univs (UState.universe_context_set) *)
+    let sigma =
+      if PolyFlags.univ_poly flags.poly then sigma
+      else Evd.fix_undefined_variables sigma
+    in
+    let sigma = UnivVariances.register_universe_variances_of_eproofs env sigma proofs in
+    let sigma = Evd.minimize_universes ~poly:flags.poly sigma in
     let sigma = Evarutil.nf_evar_map_undefined sigma in
     let uentry = UState.check_univ_decl ~poly:flags.poly (Evd.ustate sigma) udecl in
     let () =
-      if !Equations_common.debug then
+      if Equations_common.get_debug () then
         Feedback.msg_debug (str"Defining programs, before simplify_evars " ++ pr_programs env sigma programs);
     in
     let programs = List.map (map_program (simplify_evars sigma)) programs in
     let () =
-      if !Equations_common.debug then
+      if Equations_common.get_debug () then
         Feedback.msg_debug (str"Defining programs " ++ pr_programs env sigma programs);
     in
     let evd = ref sigma in

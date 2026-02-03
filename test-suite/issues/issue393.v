@@ -13,8 +13,6 @@ Check (there here) : 26 ∈ (43 :: 26 :: 76 :: nil).
 
 (* Does rocq-equations mistake variable names sometimes? *)
 
-Set Equations Debug.
-
 Equations repl {A} (R : list A) prev (idx : prev ∈ R) (next : A) : list A :=
   repl (X :: XS) X here         next := next :: XS;
   repl (X :: XS) prev (there idx') next := X :: (repl XS prev idx' next).

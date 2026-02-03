@@ -8,6 +8,7 @@
 
 From Equations.Prop Require Import Equations.
 
+Unset Universe Polymorphism.
 
 Ltac find_noCycle_proof H :=
   let rec aux t ty := 

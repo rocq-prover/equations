@@ -91,6 +91,7 @@ Transparent list_size.
 Section RoseMut.
   Context {A : Set}.
 
+  Scheme All for list.
   Inductive t : Set :=
   | leaf (a : A) : t
   | node (l : list t) : t.
