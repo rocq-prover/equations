@@ -5,7 +5,7 @@ From Equations.Prop Require Import Classes EqDec DepElim NoConfusion Tactics.
 Derive EqDec for unit bool nat.
 
 #[export]
-Polymorphic Instance prod_eqdec {A B} `(EqDec A) `(EqDec B) : EqDec (prod A B).
+Instance prod_eqdec {A B} `(EqDec A) `(EqDec B) : EqDec (prod A B).
 Proof. eqdec_proof. Defined.
 
 #[export]

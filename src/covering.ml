@@ -565,7 +565,7 @@ let split_var (env,evars) var delta =
       let { src_ctx = ctx'; map_inst = s; tgt_ctx = ctx } = map in
       (* ctx' |- s : before ; ctxc *)
       (* ctx' |- cpat : ty *)
-      if !debug then Feedback.msg_debug Pp.(str"cpat: " ++ pr_pat env !evars cstrpat);
+      Equations_common.debug Pp.(fun () -> str"cpat: " ++ pr_pat env !evars cstrpat);
       let cpat = specialize !evars s cstrpat in
       let ctx' = do_renamings env !evars ctx' in
       (* ctx' |- spat : before ; id *)
@@ -716,7 +716,7 @@ let compute_rec_type context programs =
 
 let print_program_info env sigma programs =
   let open Pp in
-  if !Equations_common.debug then
+  if Equations_common.get_debug () then
     Feedback.msg_debug (str "Programs: " ++ prlist_with_sep fnl (pr_program_info env sigma) programs)
 
 let make_fix_proto env sigma ty =
@@ -751,9 +751,7 @@ let interp_arity env evd ~poly ~is_rec ~with_evars notations (((loc,i),udecl,rec
     Equations_common.evd_comb1 (interp_type_evars_impls env' ?impls:None) evd ty
   in
   let impls = impls @ impls' in
-  let sigma = Evd.minimize_universes !evd in
-  let sign = nf_rel_context_evar sigma sign in
-  let arity = nf_evar sigma arity in
+  let sigma = UnivVariances.register_universe_variances_of_type env !evd arity in
   let interp_reca k i =
     match k with
     | None | Some Syntax.Mutual -> MutualOn i
@@ -781,15 +779,14 @@ let interp_arity env evd ~poly ~is_rec ~with_evars notations (((loc,i),udecl,rec
     | Some (WellFounded (c, r)) -> Some (WellFounded (c, r))
   in
   let body = it_mkLambda_or_LetIn arity sign in
-  let _ = if not with_evars then Pretyping.check_evars env !evd body in
+  let _ = if not with_evars then Pretyping.check_evars env sigma body in
   let program_orig_type = it_mkProd_or_LetIn arity sign in
-  let program_sort =
-    let u = Retyping.get_sort_of env !evd program_orig_type in
-    let sigma, sortl, sortu = nonalgebraic_universe_level_of_universe env !evd u in
-    evd := sigma; ESorts.kind sigma sortu
+  let sigma, program_sort =
+    let u = Retyping.get_sort_of env sigma program_orig_type in
+    let sigma, sortl, sortu = nonalgebraic_universe_level_of_universe env sigma u in
+    sigma, ESorts.kind sigma sortu
   in
-  let program_implicits = Impargs.compute_implicits_with_manual env !evd program_orig_type false impls in
-  let () = evd := Evd.minimize_universes !evd in
+  let program_implicits = Impargs.compute_implicits_with_manual env sigma program_orig_type false impls in
   match rec_annot with
   | None ->
     { program_loc = loc;
@@ -862,7 +859,7 @@ let wf_fix_constr env evars sign arity sort carrier cterm crel =
      *   let () = evars := sigma in
      *   mkApp (EConstr.mkRef (Lazy.force logic_tele_fix, inst), [| tele; crel; wf; concl|])
      * else *)
-    mkapp env evars logic_tele_fix [| tele; crel; wf; concl|]
+    mkapp env evars logic_tele_fix [| tele; crel; concl; wf |]
   in
   let sigma, fixty = Typing.type_of env !evars fix in
   let () = evars := sigma in
@@ -1068,18 +1065,18 @@ let loc_before loc loc' =
 let rec covering_aux env evars p data prev (clauses : (pre_clause * (int * int)) list) path
     prob extpats lets ty =
   let { src_ctx = ctx; map_inst = pats; tgt_ctx = ctx' } = prob in
-  if !Equations_common.debug then
+  if Equations_common.get_debug () then
     Feedback.msg_debug Pp.(str"Launching covering on "++ pr_preclauses env !evars (List.map fst clauses) ++
                            str " with problem " ++ pr_problem p env !evars prob ++
                            str " extpats " ++ pr_user_pats env !evars extpats);
   match clauses with
   | (Pre_clause (loc, lhs, rhs), (idx, cnt) as clause) :: clauses' ->
-    if !Equations_common.debug then
+    if Equations_common.get_debug () then
       Feedback.msg_debug (str "Matching " ++ pr_user_pats env !evars (extpats @ lhs) ++ str " with " ++
                           pr_problem p env !evars prob);
     (match matches env !evars (extpats @ lhs) prob with
      | UnifSuccess (s, uacc, acc, empties) ->
-       if !Equations_common.debug then Feedback.msg_debug (str "succeeded with substitution: " ++ 
+       if Equations_common.get_debug () then Feedback.msg_debug (str "succeeded with substitution: " ++
         prlist_with_sep spc (fun ((loc, x, prov), pat) -> 
         hov 2 (pr_provenance ~with_gen:true (Id.print x) prov ++ str" = " ++ pr_pat env !evars pat ++ spc ())) s);
        let _check_aliases = 
@@ -1138,20 +1135,20 @@ let rec covering_aux env evars p data prev (clauses : (pre_clause * (int * int))
             | PUVar (id, gen) -> Some ((DAst.with_loc_val (fun ?loc _ -> loc) x, id, gen), PInac y)
             | _ -> None) acc) *)
         in
-        if !Equations_common.debug then Feedback.msg_debug (str "Renaming problem: " ++
+        if Equations_common.get_debug () then Feedback.msg_debug (str "Renaming problem: " ++
           hov 2 (pr_context_map env !evars prob) ++ str " with bindings " ++ 
           prlist_with_sep spc (fun (i, (x, inacc, gen)) -> str "Rel " ++ int i ++ str" = " ++ 
           pr_provenance ~with_gen:true (Id.print x) gen ++ 
           str", inacc = " ++ bool inacc) (Int.Map.bindings bindings));
        let prob = rename_domain env !evars bindings prob in
-       if !Equations_common.debug then Feedback.msg_debug (str "Renamed problem: " ++ 
+       if Equations_common.get_debug () then Feedback.msg_debug (str "Renamed problem: " ++
         hov 2 (pr_context_map env !evars prob));
        (* let sext =
         List.filter_map (fun (i, (x, inacc, gen)) -> 
           if gen then None
           else Some (x, if inacc then PInac (mkRel i) else PRel i)) (Int.Map.bindings bindings) in  *)
        let s = (s, uacc, acc) in
-       if !Equations_common.debug then Feedback.msg_debug (str "Substitution: " ++ 
+       if Equations_common.get_debug () then Feedback.msg_debug (str "Substitution: " ++
         prlist_with_sep spc (fun (x, t) -> str "var " ++ Id.print x ++ str" = " ++ pr_pat env !evars t) 
           (pi1 s));
        (* let prob = compose_subst env ~sigma:!evars renaming prob in *)
@@ -1193,11 +1190,11 @@ let rec covering_aux env evars p data prev (clauses : (pre_clause * (int * int))
            | Some s -> Some (List.rev prev @ (Pre_clause (loc,lhs,Some rhs),(idx, cnt+1)) :: clauses', s)))
 
      | UnifFailure ->
-       if !Equations_common.debug then Feedback.msg_debug (str "failed");
+       if Equations_common.get_debug () then Feedback.msg_debug (str "failed");
        covering_aux env evars p data (clause :: prev) clauses' path prob extpats lets ty
 
      | UnifStuck -> 
-       if !Equations_common.debug then Feedback.msg_debug (str "got stuck");
+       if Equations_common.get_debug () then Feedback.msg_debug (str "got stuck");
        let blocks = blockers env (extpats @ lhs) prob in
        equations_debug (fun () ->
            str "blockers are: " ++

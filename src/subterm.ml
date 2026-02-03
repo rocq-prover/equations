@@ -89,7 +89,7 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
     in branches
   in
   let branches = Array.fold_right (fun x acc -> x @ acc) inds [] in
-  let _trans_branch =
+  let _trans_branch () =
     let liftargbinders = lift_rel_context lenargs argbinders in
     let liftargbinders' = lift_rel_context lenargs liftargbinders in
     let indr = ERelevance.make oneind.mind_relevance in
@@ -127,10 +127,9 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
        it_mkProd_or_LetIn (mkProd (annotR Anonymous, xy, mkProd (annotR Anonymous, lift 1 yz, lift 2 xz))) binders)
   in
   let branches = (* trans_branch ::  *)branches in
-  let declare_one_ind i ind branches =
+  let declare_one_ind sigma i ind branches =
     let indid = Nametab.basename_of_global (Names.GlobRef.IndRef (fst ind)) in
     let subtermid = add_suffix indid "_direct_subterm" in
-    let constructors = List.map (fun (i, j, constr) -> EConstr.to_constr sigma constr) branches in
     let consnames = List.map (fun (i, j, _) ->
       add_suffix subtermid ("_" ^ string_of_int i ^ "_" ^ string_of_int j))
       branches
@@ -145,39 +144,45 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
                       sort)))
       binders
     in
-      { mind_entry_typename = subtermid;
-        mind_entry_arity = EConstr.to_constr sigma arity;
-        mind_entry_consnames = consnames;
-        mind_entry_lc = constructors }
-  in
-  let univs, ubinders = Evd.univ_entry ~poly sigma in
-  let usubst, uctx = match univs with
-  | UState.Monomorphic_entry ctx ->
-    let () = Global.push_context_set ctx in
-    UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
-  | UState.Polymorphic_entry uctx ->
-    let uinst, auctx = UVars.abstract_universes uctx in
-    UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry auctx
-  in
-  let nf_univs c = CVars.subst_univs_level_constr usubst c in
-  let declare_ind ~pm =
-    let inds = List.map (fun ind ->
-      { ind with mind_entry_arity = nf_univs ind.mind_entry_arity;
-                 mind_entry_lc = List.map nf_univs ind.mind_entry_lc })
-      [declare_one_ind 0 indu branches]
+    let constructors = List.map (fun (i, j, constr) -> constr) branches in
+    let sigma = UnivVariances.register_universe_variances_of_inductive env sigma
+                  ~udecl:UState.default_univ_decl
+                  ~cumulative:(Declareops.inductive_is_cumulative mind)
+                  ~params:parambinders
+                  ~arities:[arity]
+                  ~constructors:[consnames,constructors]
     in
+    let sigma = Evd.minimize_universes sigma in
+    let constructors = List.map (EConstr.to_constr sigma) constructors in
+    let univ_entry = Evd.univ_entry ~poly sigma in
+    let usubst, ind_entry = match univ_entry.UState.universes_entry_universes with
+      | UState.Monomorphic_entry ctx ->
+          let () = Global.push_context_set ctx in
+          UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
+        | UState.Polymorphic_entry (uctx, _variances) -> (* FIXME ignored variances? *)
+          let uinst, auctx = UVars.abstract_universes uctx in
+          UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry (auctx, Some Infer_variances)
+    in
+    let nf_univs c = CVars.subst_univs_level_constr usubst c in
+    let entry = { mind_entry_typename = subtermid;
+      mind_entry_arity = nf_univs (EConstr.to_constr sigma arity);
+      mind_entry_consnames = consnames;
+      mind_entry_lc = List.map nf_univs constructors }
+    in
+    sigma, usubst, entry, ind_entry, univ_entry
+  in
+  let declare_ind ~pm =
+    let sigma, usubst, entry, ind_entry, univ_entry = declare_one_ind sigma 0 indu branches in
     let inductive =
       { mind_entry_record = None;
         mind_entry_finite = Declarations.Finite;
-        mind_entry_params = CVars.subst_univs_level_context usubst @@
+        mind_entry_params = CVars.subst_univs_level_context usubst @@ 
           List.map (fun d -> to_rel_decl sigma (Context.Rel.Declaration.map_constr refresh_universes d)) parambinders;
-        mind_entry_inds = inds;
+        mind_entry_inds = [entry];
         mind_entry_private = None;
-        mind_entry_universes = uctx;
-        mind_entry_variance = None;
-      }
+        mind_entry_universes = ind_entry; }
     in
-    let k = DeclareInd.declare_mutual_inductive_with_eliminations inductive (univs, ubinders) [] in
+    let k = DeclareInd.declare_mutual_inductive_with_eliminations inductive univ_entry [] in
     let () =
       let env = Global.env () in
       let sigma = Evd.from_env env in
@@ -185,14 +190,13 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
       ignore (Sigma_types.declare_sig_of_ind env sigma ~poly ind) in
     let subind = mkIndU ((k,0), u) in
     let constrhints =
-      List.map_i (fun i entry ->
-        List.map_i (fun j _ -> empty_hint_info, true,
-          GlobRef.ConstructRef ((k,i),j)) 1 entry.mind_entry_lc)
-        0 inds
+      List.map_i (fun j _ ->
+          empty_hint_info, true,
+          GlobRef.ConstructRef ((k,0),j)) 1 entry.mind_entry_lc
     in
     let locality = if Global.sections_are_opened () then Hints.Local else Hints.SuperGlobal in
     let () = Hints.add_hints ~locality [subterm_relation_base]
-                             (Hints.HintsResolveEntry (List.concat constrhints)) in
+                             (Hints.HintsResolveEntry constrhints) in
     (* Proof of Well-foundedness *)
     let relid = add_suffix (Nametab.basename_of_global (GlobRef.IndRef ind))
                            "_subterm" in
@@ -202,7 +206,7 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
     let sigma = Evd.update_sigma_univs (Environ.universes env) sigma in
     let evm = ref sigma in
     let kl = get_efresh logic_wellfounded_class evm in
-    let kl = get_class sigma kl in
+    let kl = get_class !evm kl in
     let parambinders, body, ty =
       let pars, ty, rel =
         if List.is_empty argbinders then
@@ -266,11 +270,13 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
       Classes.declare_instance (Global.env ()) !evm (Some empty_hint_info)
                                           Hints.SuperGlobal (GlobRef.ConstRef cst)
     in
-    let _bodyty = e_type_of (Global.env ()) evm body in
-    let _ty' = e_type_of (Global.env ()) evm ty in
-    let evm = Evd.minimize_universes !evm in
-    let obls, _, constr, typ = RetrieveObl.retrieve_obligations env id evm 0 body ty in
-    let uctx = Evd.ustate evm in
+    let env = Global.env () in
+    let _bodyty = e_type_of env evm body in
+    let _ty' = e_type_of env evm ty in
+    let sigma = UnivVariances.register_universe_variances_of env !evm ~typ:ty body in
+    let sigma = Evd.minimize_universes sigma in
+    let obls, _, constr, typ = RetrieveObl.retrieve_obligations ~status:Evar_kinds.Expand env id sigma 0 body ty in
+    let uctx = Evd.ustate sigma in
     let cinfo = Declare.CInfo.make ~name:id ~typ () in
     let info = Declare.Info.make ~poly ~scope:Locality.(Global ImportDefaultBehavior)
         ~kind:Decls.(IsDefinition Instance) ~hook:(Declare.Hook.make hook) () in

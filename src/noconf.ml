@@ -142,12 +142,7 @@ let derive_no_confusion ~pm env sigma0 ~poly (ind,u as indu) =
   let id = add_prefix "NoConfusion_" indid in
   let cstNoConf = Declare.declare_constant ~name:id (Declare.DefinitionEntry ce) ~kind:Decls.(IsDefinition Definition) in
   let env = Global.env () in
-  let sigma = Evd.from_env env in
-  let sigma, indu = Evd.fresh_global
-      ~rigid:Evd.univ_rigid (* Universe levels of the inductive family should not be tampered with. *)
-      env sigma (GlobRef.IndRef ind) in
-  let indu = destInd sigma indu in
-  Noconf_hom.derive_noConfusion_package ~pm env sigma ~poly indu indid
+  Noconf_hom.derive_noConfusion_package ~pm env ~poly ind indid
     ~prefix:"" ~tactic:(noconf_tac ()) cstNoConf
 
 let () =
