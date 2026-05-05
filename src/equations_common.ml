@@ -604,10 +604,10 @@ let lift_list l = List.map (Vars.lift 1) l
 (*     | _ -> pars *)
 (*   in aux init n c *)
 
-let is_transparent_constant csts ps c =
+let is_transparent_constant env csts ps c =
   match Structures.PrimitiveProjections.find_opt c with
-  | None -> Cset.mem c csts
-  | Some p -> PRset.mem p ps
+  | None -> Cset_env.mem (QConstant.canonize env c) csts
+  | Some p -> PRset_env.mem (QProjection.Repr.canonize env p) ps
 
 let unfold_head env sigma (ids, csts, ps) c =
   let rec aux c = 
@@ -616,7 +616,7 @@ let unfold_head env sigma (ids, csts, ps) c =
       (match Environ.named_body id env with
       | Some b -> true, of_constr b
       | None -> false, c)
-    | Const (cst,u) when is_transparent_constant csts ps cst ->
+    | Const (cst,u) when is_transparent_constant env csts ps cst ->
 	    true, of_constr (Environ.constant_value_in env (cst, EInstance.kind sigma u))
     | App (f, args) ->
       (match aux f with
@@ -650,7 +650,7 @@ let unfold_head env sigma db t =
         with Not_found -> user_err (str "Unknown database " ++ str dbname)
       in
       let (ids, csts, ps) = Hints.Hint_db.unfolds db in
-        (Id.Set.union ids i, Cset.union csts c, PRset.union ps p)) (Id.Set.empty, Cset.empty, PRset.empty) db
+        (Id.Set.union ids i, Cset_env.union csts c, PRset_env.union ps p)) (Id.Set.empty, Cset_env.empty, PRset_env.empty) db
   in
   unfold_head env sigma st t
 
