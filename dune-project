@@ -1,5 +1,5 @@
-(lang dune 3.13)
-(using coq 0.8)
+(lang dune 3.21)
+(using rocq 0.11)
 (name rocq-equations)
 (source (github mattam82/Coq-Equations))
 (license LGPL-2.1-only)

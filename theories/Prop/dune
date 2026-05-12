@@ -1,4 +1,4 @@
-(coq.theory
+(rocq.theory
  ; This determines the -R flag
  (name Equations.Prop)
  (package rocq-equations)

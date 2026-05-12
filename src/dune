@@ -6,4 +6,4 @@
  (preprocess
   (pps ppx_optcomp -- -cookie "ppx_optcomp.env=env ~rocq:(Defined \"%{coq:version.major}.%{coq:version.minor}\")")))
 
-(coq.pp (modules g_equations))
+(rocq.pp (modules g_equations))

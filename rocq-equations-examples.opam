@@ -11,7 +11,7 @@ license: "LGPL-2.1-only"
 homepage: "https://mattam82.github.io/Coq-Equations"
 bug-reports: "https://github.com/mattam82/Coq-Equations/issues"
 depends: [
-  "dune" {>= "3.13"}
+  "dune" {>= "3.21"}
   "rocq-equations"
   "odoc" {with-doc}
 ]
@@ -30,3 +30,4 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/mattam82/Coq-Equations.git"
+x-maintenance-intent: ["(latest)"]
