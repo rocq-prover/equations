@@ -1652,7 +1652,7 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
     let ind_sort =
       let open UnivGen.QualityOrSet in
       match Retyping.get_sort_quality_of env !evd (it_mkProd_or_LetIn arity sign) with
-      | Qual (QConstant QProp) ->
+      | QConstant QProp ->
         (* If the program is producing a proof, then we cannot hope to have its
            graph in Type in general (it might be case-splitting on non-strict propositions). *)
         Sorts.prop
