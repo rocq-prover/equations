@@ -67,6 +67,7 @@ let linear sigma vars args =
 let needs_generalization gl id =
   let open Tacmach in
   let open Proofview.Goal in
+  let env = env gl in
   let sigma = sigma gl in
   let f, args, def, id, oldid =
     let oldid = pf_get_new_id id gl in
@@ -83,7 +84,7 @@ let needs_generalization gl id =
       let f', args' = decompose_indapp sigma f args in
       let parvars = ids_of_constr ~all:true sigma Id.Set.empty f' in
         if not (linear sigma parvars args') then true
-        else Array.exists (fun x -> not (isVar sigma x) || is_section_variable (Global.env ()) (destVar sigma x)) args'
+        else Array.exists (fun x -> not (isVar sigma x) || is_section_variable_env env (destVar sigma x)) args'
 
 
 let dependent_pattern ?(pattern_term=true) c =
@@ -376,14 +377,14 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
   enter_goal begin fun env sigma concl ->
     let sort = Retyping.get_sort_of env sigma concl in
     let hyps = named_context env in
-    let env = Environ.reset_context env in
     let default_loc, id = id in
     (* Keep aside the section variables. *)
-    let loc_hyps, sec_hyps = CList.split_when
+    let sec_hyps, loc_hyps = CList.partition
       (fun decl ->
         let id = Context.Named.Declaration.get_id decl in
-        Termops.is_section_variable (Global.env ()) id) hyps in
-    let env = push_named_context sec_hyps env in
+        Termops.is_section_variable_env env id) hyps in
+    let env = Environ.reset_context env in
+    let env = push_named_context (List.map (fun x -> Environ.SecVar, x) sec_hyps) env in
 
     (* Check that [id] exists in the current context. *)
     begin try

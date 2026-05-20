@@ -893,7 +893,7 @@ let e_conv env evdref t t' =
       
 let deps_of_var sigma id env =
   Environ.fold_named_context
-    (fun _ decl (acc : Id.Set.t) ->
+    (fun _ _status decl (acc : Id.Set.t) ->
        let n, b, t = Context.Named.Declaration.to_tuple decl in
        if Option.cata (fun x -> occur_var env sigma id (of_constr x)) false b ||
             occur_var env sigma id (of_constr t) then

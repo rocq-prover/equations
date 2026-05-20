@@ -1383,13 +1383,13 @@ let simplify_tac (rules : simplification_rules) : unit Proofview.tactic =
     let concl = Proofview.Goal.concl gl in
     let glu = univ_of_goal env sigma concl in
     let hyps = Proofview.Goal.hyps gl in
-    let env = Environ.reset_context env in
     (* Keep aside the section variables. *)
-    let loc_hyps, sec_hyps = CList.split_when
+    let sec_hyps, loc_hyps = CList.partition
       (fun decl ->
         let id = Context.Named.Declaration.get_id decl in
-        Termops.is_section_variable (Global.env ()) id) hyps in
-    let env = push_named_context sec_hyps env in
+        Termops.is_section_variable_env env id) hyps in
+    let env = Environ.reset_context env in
+    let env = push_named_context (List.map (fun x -> Environ.SecVar, x) sec_hyps) env in
     (* We want to work in a [rel_context], not a [named_context]. *)
     let ctx, subst = Equations_common.rel_of_named_context sigma loc_hyps in
     let _, rev_subst, _ =

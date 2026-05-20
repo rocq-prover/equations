@@ -612,7 +612,7 @@ let term_of_tree env0 isevar sort tree =
           msg_debug(str"... in context:");
           msg_debug(pr_context env !evd ctx);
           msg_debug(str"... named context:");
-          msg_debug(Printer.pr_named_context env !evd (EConstr.Unsafe.to_named_context (named_context env)));
+          msg_debug(Printer.pr_named_context_of env !evd);
         end;
         let _ =
           let env = push_rel_context (cut_ctx @ new_ctx @ ctx') env in
