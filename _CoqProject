@@ -1,9 +1,10 @@
 src/META.rocq-equations.in
 -I src
 -I test-suite
--Q _build/default/theories Equations
+-Q _build/install/default/lib/coq/user-contrib/Equations Equations
 -I theories
 -I examples
+-I _build/install/default/lib
 -Q _build/default/examples Equations.Examples
 
 CAMLDEBUG = "-bin-annot -g -for-pack Equations -w -58"
