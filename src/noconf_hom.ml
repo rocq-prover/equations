@@ -53,10 +53,11 @@ let get_forced_positions sigma args concl =
   in
   List.rev (List.fold_left_i is_forced 1 [] args)
 
-let derive_noConfusion_package ~pm env sigma ~poly (ind,u as indu) indid ~prefix ~tactic cstNoConf =
+let derive_noConfusion_package ~pm env sigma ~poly (ind, u) indid ~prefix ~tactic cstNoConf =
   let mindb, oneind = Global.lookup_inductive ind in
   let ctx = List.map of_rel_decl oneind.mind_arity_ctxt in
-  let ctx = subst_instance_context (snd indu) ctx in
+  let u = Inductiveops.get_template_instance mindb u in
+  let ctx = subst_instance_context u ctx in
   let ctx = smash_rel_context ctx in
   let len =
     if prefix = "" then mindb.mind_nparams
@@ -110,7 +111,8 @@ let derive_no_confusion_hom ~pm env sigma0 ~poly (ind,u as indu) =
   let mindb, oneind = Global.lookup_inductive ind in
   let _, inds = Reductionops.dest_arity env sigma0 (Inductiveops.type_of_inductive env indu) in
   let ctx = List.map of_rel_decl oneind.mind_arity_ctxt in
-  let ctx = subst_instance_context (snd indu) ctx in
+  let u = Inductiveops.get_template_instance mindb u in
+  let ctx = subst_instance_context u ctx in
   let ctx = smash_rel_context ctx in
   let len = List.length ctx in
   let params = mindb.mind_nparams in
