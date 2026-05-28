@@ -7,6 +7,7 @@
 (**********************************************************************)
 
 Set Asymmetric Patterns.
+#[warning="-unknown-option"] Set Asymmetric Patterns No Implicits.
 Set Implicit Arguments.
 Unset Strict Implicit.
 From Stdlib Require Import Arith.

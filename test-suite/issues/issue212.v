@@ -3,6 +3,7 @@ From Stdlib Require Import Lia ssreflect.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 Set Asymmetric Patterns.
+#[warning="-unknown-option"] Set Asymmetric Patterns No Implicits.
 
 Import ListNotations.
 

@@ -12,6 +12,7 @@ From Stdlib Require Import FunctionalExtensionality.
 Set Equations Transparent.
 Set Keyed Unification.
 Set Asymmetric Patterns.
+#[warning="-unknown-option"] Set Asymmetric Patterns No Implicits.
 Local Set Firstorder Solver auto with arith core datatypes.
 
 Ltac intuition_solver ::= auto with *.

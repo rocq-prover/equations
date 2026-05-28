@@ -10,6 +10,7 @@ From Stdlib Require Import Bool.Bool.
 Set Keyed Unification.
 Set Implicit Arguments.
 Set Asymmetric Patterns.
+#[warning="-unknown-option"] Set Asymmetric Patterns No Implicits.
 
 Inductive type : Set :=
 | Nat : type
