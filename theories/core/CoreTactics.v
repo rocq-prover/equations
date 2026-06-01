@@ -206,7 +206,7 @@ Ltac destruct_all_rec_calls :=
 
 Ltac revert_last :=
   match goal with
-    [ H : _ |- _ ] => revert H
+    [ H : _ |- _ ] => tryif is_section_var H then idtac else revert H
   end.
 
 (** Repeatedly reverse the last hypothesis, putting everything in the goal. *)

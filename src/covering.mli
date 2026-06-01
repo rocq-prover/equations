@@ -156,8 +156,6 @@ val pr_problem :
   program_info ->
   env -> Evd.evar_map -> context_map -> Pp.t
 val rel_id : (Name.t * 'a * 'b) list -> int -> Id.t
-val push_named_context :
-  named_context -> env -> env
 
 val refine_arg : int -> rel_context -> int * int
 

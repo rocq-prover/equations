@@ -136,11 +136,10 @@ let mutual_fix li l =
     let infos = List.map (fun ev -> Evd.find_undefined sigma ev) gls in
     let types = List.map (fun evi -> Evd.evar_relevance evi, Evd.evar_concl evi) infos in
     let env =
-      let ctxs = List.map (fun evi -> EConstr.Unsafe.to_named_context @@
-                            Evd.evar_context evi) infos in
+      let ctxs = List.map Evd.evar_hyps infos in
       let fst, rest = List.sep_last ctxs in
-      if List.for_all (fun y -> Context.Named.equal Sorts.relevance_equal Constr.equal fst y) rest then
-        Environ.push_named_context fst env
+      if List.for_all (fun y -> Environ.eq_named_context_val fst y) rest then
+        Environ.reset_with_named_context fst env
       else env
     in
     let li =
@@ -172,19 +171,19 @@ let mutual_fix li l =
          let (sp', u')  = check_mutind env sigma n ar in
          if not (Environ.QMutInd.equal env sp sp') then
            error "Fixpoints should be on the same mutual inductive declaration.";
-         if try ignore (Context.Named.lookup f sign); true with Not_found -> false then
+         if Environ.mem_named_ctxt f sign then
            CErrors.user_err
                     (str "Name " ++ pr_id f ++ str " already used in the environment");
-         mk_sign (LocalAssum (make_annot f (ERelevance.kind sigma r), EConstr.to_constr sigma ar) :: sign) oth
+         mk_sign (Environ.push_named_context_val ProofVar (LocalAssum (make_annot f (ERelevance.kind sigma r), EConstr.to_constr sigma ar)) sign) oth
     in
-    let sign = mk_sign (Environ.named_context env) all in
+    let sign = mk_sign (Environ.named_context_val env) all in
     let idx = Array.map_of_list pred l in
     let nas = Array.map_of_list nameR li in
     let body = ref (fun i -> assert false) in
     let one_body =
       Refine.refine ~typecheck:false
       (fun sigma ->
-        let nenv = Environ.reset_with_named_context (Environ.val_of_named_context sign) env in
+        let nenv = Environ.reset_with_named_context sign env in
         let types = List.map snd types in
         let (sigma, evs) = mk_holes nenv sigma types in
         let evs = Array.map_of_list (Vars.subst_vars sigma (List.rev li)) evs in
@@ -610,7 +609,7 @@ let aux_ind_fun info chop nested unfp unfids p =
                   | _ -> acc
                 in
                 let args_vars = List.fold_left collect_vars [] args in
-                let args_vars = List.filter (fun id -> not (Termops.is_section_variable (Global.env ()) id)) args_vars in
+                let args_vars = List.filter (fun id -> not (Termops.is_section_variable_env env id)) args_vars in
                 List.map mkVar args_vars
               in
               let tac, _ = List.fold_right2 (wheretac env sigma) wheres unfswheres (tclIDTAC, subst) in

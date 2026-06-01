@@ -50,7 +50,7 @@ let inductive_info sigma ((mind, _ as ind),u) =
   let subst, paramargs, params =
     named_of_rel_context (fun () -> Id.of_string "param") (erel_context params_ctxt) in
   let nparams = List.length params in
-  let env = List.fold_right push_named params (Global.env ()) in
+  let env = List.fold_right (push_named ProofVar) params (Global.env ()) in
   let info_of_ind i ind =
     let ctx = ind.mind_arity_ctxt in
     let args, _ = List.chop ind.mind_nrealargs ctx in

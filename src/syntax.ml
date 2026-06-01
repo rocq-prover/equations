@@ -451,10 +451,16 @@ let interp_pat env sigma notations ~avoid p pat =
            EConstr.Unsafe.to_constr ty))
       vars rlv tys
   in
-  let env = Environ.push_named_context nctx env in
+  let env =
+    List.fold_right (fun d env ->
+        (* WTF HACK FIXME *)
+        if Environ.mem_named (Context.Named.Declaration.get_id d) env then env
+        else Environ.push_named ProofVar d env)
+      nctx env
+  in
   let gc =
     Metasyntax.with_syntax_protection (fun () ->
-      List.iter (Metasyntax.set_notation_for_interpretation (Environ.push_named_context nctx env) ienv) notations;
+      List.iter (Metasyntax.set_notation_for_interpretation env ienv) notations;
       try Constrintern.intern_gen Pretyping.WithoutTypeConstraint ~impls:ienv env sigma pat
       with Not_found -> anomaly (str"Internalizing pattern")) ()
   in

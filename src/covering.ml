@@ -659,9 +659,10 @@ let instance_of_pats env evars (ctx : rel_context) (pats : (int * bool) list) =
 let push_rel_context_eos ctx env evars =
   if named_context env <> [] then
     let env' =
-      push_named (make_named_def (annotR coq_end_of_section_id)
-                    (Some (get_efresh coq_the_end_of_the_section evars))
-                    (get_efresh coq_end_of_section evars)) env
+      push_named ProofVar
+        (make_named_def (annotR coq_end_of_section_id)
+           (Some (get_efresh coq_the_end_of_the_section evars))
+           (get_efresh coq_end_of_section evars)) env
     in push_rel_context ctx env'
   else push_rel_context ctx env
 
@@ -678,8 +679,6 @@ let pr_problem p env sigma { src_ctx = delta; map_inst = patcs }=
 
 let rel_id ctx n = 
   Nameops.Name.get_id (pi1 (List.nth ctx (pred n)))
-
-let push_named_context = List.fold_right push_named
 
 let check_unused_clauses env sigma cl =
   let unused = List.filter (fun (_, (_, used)) -> used = 0) cl in
