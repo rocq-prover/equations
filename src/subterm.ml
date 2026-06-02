@@ -33,7 +33,7 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
       str"or a [NoConfusionHom] instance for type " ++ Printer.pr_inductive env ind ++ str " to be derived first."))
   in
   let (mind, oneind as ms) = Global.lookup_inductive ind in
-  let ctx = CVars.subst_instance_context (EInstance.kind sigma u) oneind.mind_arity_ctxt in
+  let ctx = CVars.subst_instance_context (EInstance.kind sigma (Inductiveops.get_template_instance mind u)) oneind.mind_arity_ctxt in
   let indsort = 
     let indty = Inductive.type_of_inductive (ms, EInstance.kind sigma u) in
     (snd (Reduction.dest_arity env indty))
@@ -280,6 +280,7 @@ let () =
 let derive_below env sigma ~poly (ind,univ as indu) =
   let evd = ref sigma in
   let mind, oneind = Global.lookup_inductive ind in
+  let univ = Inductiveops.get_template_instance mind univ in
   let ctx = oneind.mind_arity_ctxt in
   let params = mind.mind_nparams in
   let realargs = oneind.mind_nrealargs in
@@ -316,7 +317,7 @@ let derive_below env sigma ~poly (ind,univ as indu) =
       let recarg = mkVar recid in
       let args, _ = decompose_prod_decls !evd ty in
       let args, _ = List.chop (List.length args - params) args in
-      let ty' = replace_term !evd (mkApp (mkIndU (ind,univ), rel_vect (-params) params)) recarg ty in
+      let ty' = replace_term !evd (mkApp (mkIndU indu, rel_vect (-params) params)) recarg ty in
       let args', _ = decompose_prod_decls !evd ty' in
       let args', _ = List.chop (List.length args' - params) args' in
       let arg_tys = fst (List.fold_left (fun (acc, n) decl ->

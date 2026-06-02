@@ -27,7 +27,8 @@ let mkcase env sigma c ty constrs =
   in
   let mindb, oneind = Global.lookup_inductive (fst ind) in
   let ctx = oneind.mind_arity_ctxt in
-  let ui = EConstr.EInstance.kind sigma (snd ind) in
+  let ui = Inductiveops.get_template_instance mindb (snd ind) in
+  let ui = EConstr.EInstance.kind sigma ui in
   let ctx = CVars.subst_instance_context ui ctx in
   let _len = List.length ctx in
   let params = mindb.mind_nparams in
@@ -59,6 +60,7 @@ let derive_no_confusion ~pm env sigma0 ~poly (ind,u as indu) =
   let mindb, oneind = Global.lookup_inductive ind in
   let _, inds = Reductionops.dest_arity env sigma0 (Inductiveops.type_of_inductive env indu) in
   let ctx = List.map of_rel_decl oneind.mind_arity_ctxt in
+  let u = Inductiveops.get_template_instance mindb u in
   let ctx = subst_instance_context u ctx in
   let ctx = smash_rel_context ctx in
   let len = List.length ctx in
