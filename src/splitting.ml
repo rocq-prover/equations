@@ -259,7 +259,7 @@ let pr_program env evd p =
 let pr_programs env evd p =
   prlist_with_sep fnl (pr_program env evd) p
 
-let pp s = pp_with !Topfmt.deep_ft s
+let pp s = pp_with !Topfmt.std_ft s
 
 let ppsplit s =
   let env = Global.env () in
