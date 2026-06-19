@@ -422,6 +422,8 @@ let pattern_of_glob_constr env sigma avoid patname gc =
 let program_type p = EConstr.it_mkProd_or_LetIn p.program_arity p.program_sign
 
 let interp_pat env sigma notations ~avoid p pat =
+  (* we push variables with dummy type info for the new bound variables
+     (intern doesn't look at the type of the variables) *)
   let vars = (Id.Set.elements avoid) (* (ids_of_pats [p])) *) in
   (* let () = Feedback.msg_debug (str"Variables " ++ prlist_with_sep spc pr_id vars) in *)
   let tys = List.map (fun _ -> EConstr.mkProp) vars in
@@ -432,7 +434,7 @@ let interp_pat env sigma notations ~avoid p pat =
     anomaly (str"Building internalization environment")
   in
   let notations = List.map Metasyntax.prepare_where_notation notations in
-  let vars, rlv, tys, impls, ienv =
+  let vars, rlv, tys, ienv =
     match p with
     | Some (p, _) ->
       let ty = program_type p in
@@ -441,23 +443,17 @@ let interp_pat env sigma notations ~avoid p pat =
         try compute_internalization_env env sigma ~impls:ienv Recursive [p.program_id] [ty] [p.program_impls]
         with Not_found -> anomaly (str"Building internalization environment")
       in
-      (p.program_id :: vars, r :: rlv, ty :: tys, p.program_impls :: impls, ienv)
-    | None -> (vars, rlv, tys, impls, ienv)
+      (p.program_id :: vars, r :: rlv, ty :: tys, ienv)
+    | None -> (vars, rlv, tys, ienv)
   in
   let nctx =
     List.map3 (fun id r ty ->
-        Context.Named.Declaration.LocalAssum
-          (Context.make_annot id (EConstr.Unsafe.to_relevance r),
+        Context.Rel.Declaration.LocalAssum
+          (Context.make_annot (Name id) (EConstr.Unsafe.to_relevance r),
            EConstr.Unsafe.to_constr ty))
       vars rlv tys
   in
-  let env =
-    List.fold_right (fun d env ->
-        (* WTF HACK FIXME *)
-        if Environ.mem_named (Context.Named.Declaration.get_id d) env then env
-        else Environ.push_named ProofVar d env)
-      nctx env
-  in
+  let env = Environ.push_rel_context nctx env in
   let gc =
     Metasyntax.with_syntax_protection (fun () ->
       List.iter (Metasyntax.set_notation_for_interpretation env ienv) notations;
