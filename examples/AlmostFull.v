@@ -684,16 +684,16 @@ Section SCT.
       intros n k'' g b f. intros H.
       intros gz [x rx] y.
       specialize (H (x, rx) y rx y). simpl.
-      rewrite H. clear H.
+      rw H. clear H.
       split.
       + intros [xlt relr].
-        intros f'. depelim f'. rewrite gz. apply xlt. apply relr.
+        intros f'. depelim f'. rw gz. apply xlt. apply relr.
       + intros Hf. split.
-        specialize (Hf fz). rewrite gz in Hf. apply Hf.
+        specialize (Hf fz). rw gz in Hf. apply Hf.
         intros f'. apply Hf.
       + intros n k'' g gf x y.
         split. intros [].
-        intros f. specialize (f fz). now rewrite gf in f.
+        intros f. specialize (f fz). now rw gf in f.
     Qed.
 
   Lemma graph_relation_spec {k : nat} (G : graph k) :
@@ -706,7 +706,7 @@ Section SCT.
                     | None => False
                     end).
     Proof.
-      unfold graph_relation. intros x y. now rewrite k_related_spec.
+      unfold graph_relation. intros x y. now rw k_related_spec.
     Qed.
 
   Definition approximates {k} (G : graph k) (R : relation (k_tuple_type k)) :=
@@ -732,13 +732,13 @@ Section SCT.
     approximates (G0 ⋅ G1) (compose_rel R0 R1).
   Proof.
     unfold approximates. intros ag0 ag1.
-    intros x z [y [Hxy Hyz]]. rewrite graph_relation_spec.
+    intros x z [y [Hxy Hyz]]. rw graph_relation_spec.
     intros f. specialize (ag0 _ _ Hxy). specialize (ag1 _ _ Hyz).
     rewrite -> graph_relation_spec in ag0, ag1. specialize (ag0 f).
-    funelim (graph_compose G0 G1 f). now rewrite Heq in ag0.
-    rewrite Heq0 in ag0. specialize (ag1 arg1). rewrite Heq in ag1.
+    funelim (graph_compose G0 G1 f). now rw Heq in ag0.
+    rw Heq0 in ag0. specialize (ag1 arg1). rw Heq in ag1.
     destruct weight, weight'; simpl;  try lia.
-    specialize (ag1 arg1). now rewrite Heq in ag1.
+    specialize (ag1 arg1). now rw Heq in ag1.
   Qed.
 
   Equations fin_union {A n} (f : fin n -> relation A) : relation A :=
@@ -752,10 +752,10 @@ Section SCT.
     intros [k _]. depelim k.
     split. intros [Hfz|Hfs].
     now exists fz.
-    specialize (H x y x y). rewrite -> H in Hfs.
+    specialize (H x y x y). rw H in Hfs.
     destruct Hfs. now exists (fs x0).
     intros [k Hk]. depelim k. now left. right.
-    rewrite (H x y). now exists k.
+    rw (H x y). now exists k.
   Qed.
 
   Equations fin_all k (p : fin k -> bool) : bool :=
@@ -770,7 +770,7 @@ Section SCT.
     destruct (p fz) eqn:pfz. simpl. specialize (IHk (fun f => p (fs f))).
     simpl in IHk. destruct IHk; constructor. intros f; depelim f; auto.
     intro Hf. apply n. intros f'. apply Hf.
-    simpl. constructor. intros H. specialize (H fz). rewrite pfz in H. discriminate.
+    simpl. constructor. intros H. specialize (H fz). rw pfz in H. discriminate.
   Qed.
 
   Definition graph_eq {k} (g g' : graph k) : bool :=
@@ -813,7 +813,7 @@ Section SCT.
     forall x y, list_union (rs ++ rs') x y <-> list_union rs x y \/ list_union rs' x y.
   Proof.
     induction rs; intros; simpl; simp list_union; intuition.
-    rewrite -> IHrs in H0. intuition.
+    rw IHrs in H0. intuition.
   Qed.
 
   Equations map_k_tuple k (p : k_tuple_type k) (f : fin k -> nat) : k_tuple_type k :=
@@ -878,7 +878,7 @@ Section SCT.
       intuition.
       + revert H. clear -inS inScomp Ingi.
         induction famgi. simpl. intros [].
-        simpl. rewrite in_app_iff in_map_iff.
+        simpl. rw in_app_iff in_map_iff.
         intros [[x [<- Inx]]| Ing]. apply inScomp. intuition auto.
         apply Ingi. constructor. auto.
         apply IHfamgi; auto. intros.
@@ -958,9 +958,9 @@ Section SCT.
   Proof.
     induction k. unfold TI_graph. do 2 red in G. intros f; depelim f.
     intros f. depelim f. simp TI_graph graph_compose.
-    destruct (G fz) as [[weight d]|]; simpl; try easy. now rewrite orb_false_r.
+    destruct (G fz) as [[weight d]|]; simpl; try easy. now rw orb_false_r.
     simp TI_graph graph_compose.
-    destruct (G (fs f)) as [[weight d]|]; simpl; trivial. now rewrite orb_false_r.
+    destruct (G (fs f)) as [[weight d]|]; simpl; trivial. now rw orb_false_r.
   Qed.
 
   Definition TI k : relation (k_tuple_type k) := graph_relation (TI_graph k).
@@ -977,10 +977,10 @@ Section SCT.
         intros Hg. pose proof Hg. rewrite -> graph_relation_spec in H.
         intros. pose (H fz). simpl in y0. intuition.
         assert (graph_relation (TI_graph k) rx ry).
-        rewrite graph_relation_spec. intros. clear y0. specialize (H (fs f)). simpl in H.
+        rw graph_relation_spec. intros. clear y0. specialize (H (fs f)). simpl in H.
         unfold TI_graph. destruct k. depelim f. auto.
         do 2 red in IHk. simpl in IHk. rewrite <- IHk. apply H0.
-      + intros [Hle Hi]. unfold TI. rewrite graph_relation_spec.
+      + intros [Hle Hi]. unfold TI. rw graph_relation_spec.
         intros. depelim f. simpl. auto. simpl.
         do 2 red in IHk. simpl in IHk. rewrite <- IHk in Hi.
         red in Hi. rewrite -> graph_relation_spec in Hi.
@@ -990,7 +990,7 @@ Section SCT.
 
   #[global] Instance TI_AlmostFull k : AlmostFull (TI k).
   Proof.
-    rewrite TI_intersection_equiv.
+    rw TI_intersection_equiv.
     induction k. simpl. red. red. exists ZT. simpl. intros. exact I.
     simpl. apply af_interesection.
     apply (AlmostFull_MR Nat.le). apply almost_full_le.
@@ -1012,11 +1012,11 @@ Section SCT.
       exists x. intuition. }
     pose (compose_approximates G (TI_graph k) T (TI k)).
     forward a; auto. forward a; auto. unfold TI. red. intuition.
-    rewrite TI_compose' in a.
+    rw TI_compose' in a.
     apply (approximates_power n) in a.
     specialize (a x x). specialize (a H0).
     rewrite -> graph_relation_spec in a. specialize (a f).
-    rewrite eqpow in a. lia.
+    rw eqpow in a. lia.
   Qed.
 
   Theorem size_change_termination {k} (n : nat)
@@ -1146,7 +1146,7 @@ Section SCT.
   Lemma existsb_spec {A} (p : A -> bool) l : reflect (exists x, In x l /\ p x = true) (existsb p l).
   Proof.
     destruct existsb eqn:Heq. constructor. now apply existsb_exists in Heq.
-    constructor. intro. apply existsb_exists in H. rewrite Heq in H; discriminate.
+    constructor. intro. apply existsb_exists in H. rw Heq in H; discriminate.
   Qed.
   Lemma eqb_refl {A} `{E:Eq A} (a : A) : eqb a a = true.
   Proof. destruct (eqb_spec a a); intuition. Qed.
@@ -1227,7 +1227,7 @@ Section SCT.
     + intros * H l Haux.
 (*      forward H. red. intuition.
       specialize (H l Haux). apply H. auto with datatypes.
-      rewrite app_nil_r. red. intuition. intuition.
+      rw app_nil_r. red. intuition. intuition.
     + intros * n * tracc l' [= <-]. simpl. split. intuition.
       intros inclgs incltrgs becacc.
       intuition. red. intuition. red.
@@ -1373,6 +1373,7 @@ Equations T_graphs (f : fin 2) : graph 2 :=
   T_graphs (fs fz) := T_graph_r.
 
 Definition gnlex : (nat * nat) -> nat.
+Proof.
   assert (sct:=size_change_termination 2 T_rel T_graphs). forward sct.
   intros f; depelim f. apply approximates_T_l. depelim f. apply approximates_T_r. depelim f.
   specialize (sct T_trans_clos). forward sct. apply (compute_transitive_closure_spec 10). reflexivity.
@@ -1402,17 +1403,18 @@ Print Assumptions gnlex. *)
 (* Eval native_compute in gnlex (4, 3). *)
 
 Lemma gnlex_0_l y : gnlex (0, y) = 1.
-Admitted.
+Proof. Admitted.
 
 Lemma gnlex_0_r x : gnlex (x, 0) = 1.
-Admitted.
+Proof.  Admitted.
 
 
 Lemma gnlex_S x y : gnlex (S x, S y) = gnlex (S y, y) + gnlex (S y, x).
-Admitted.
+Proof. Admitted.
 
 Lemma gnlex_S_test x y : exists foo, gnlex (S x, S y) = foo.
-  eexists. rewrite gnlex_S. destruct y. rewrite gnlex_0_r.
-  destruct x. rewrite gnlex_0_r. reflexivity.
-  rewrite gnlex_S. rewrite gnlex_0_r. destruct x. admit. rewrite gnlex_S.
+Proof. 
+  eexists. rw gnlex_S. destruct y. rw gnlex_0_r.
+  destruct x. rw gnlex_0_r. reflexivity.
+  rw gnlex_S. rw gnlex_0_r. destruct x. admit. rw gnlex_S.
 Admitted.

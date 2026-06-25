@@ -73,10 +73,12 @@ Section Wf_Transitive_Closure.
   Abbreviation trans_clos := (trans_clos R).
 
   Lemma incl_trans_clos : inclusion R trans_clos.
+  Proof.
     red; auto with relations.
   Defined.
 
   Lemma Acc_trans_clos : forall x:A, Acc R x -> Acc trans_clos x.
+  Proof.
     induction 1 as [x0 _ H1].
     apply Acc_intro.
     intros y H2.

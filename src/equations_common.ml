@@ -286,7 +286,7 @@ let make_definition ?(check = true) ?opaque ?(poly=PolyFlags.default) evm ?types
     | Some typ -> Vars.universes_of_constr typ
   in
   let used = Univ.Level.Set.union used used' in
-  let evm = Evd.restrict_universe_context evm used in
+  let evm = Evd.restrict_ustate evm used in
   let univs = Evd.univ_entry ~poly evm in
   evm0, evm, Declare.definition_entry ~univs ?types:typ body
 

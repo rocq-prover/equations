@@ -40,7 +40,7 @@ let define_unfolding_eq ~pm env evd (flags : flags)  p unfp prog prog' ei hook =
                  user_obls = Id.Set.union prog.program_split_info.user_obls info'.user_obls } in
   let () = inline_helpers info in
   let funf_cst = match info'.term_id with GlobRef.ConstRef c -> c | _ -> assert false in
-  let () = if PolyFlags.univ_poly flags.poly then evd := Evd.from_ctx info'.term_ustate in
+  let () = if PolyFlags.univ_poly flags.poly then evd := Evd.from_ustate info'.term_ustate in
   let funfc = e_new_global evd info'.term_id in
   let unfold_eq_id = add_suffix (program_id unfp) "_eq" in
   let hook_eqs _ pm =
@@ -197,7 +197,7 @@ let define_by_eqs ~pm ~poly ~program_mode ~obligations ~tactic ~open_proof opts 
   let hook ~pm i p info =
     let () = inline_helpers info in
     let f_cst = match info.term_id with GlobRef.ConstRef c -> c | _ -> assert false in
-    let () = evd := Evd.from_ctx info.term_ustate in
+    let () = evd := Evd.from_ustate info.term_ustate in
     let compiled_info = { program_cst = f_cst;
                           program_split_info = info } in
     progs.(i) <- Some (p, compiled_info);

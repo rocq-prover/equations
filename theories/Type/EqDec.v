@@ -140,6 +140,7 @@ Section EqdepDec.
     end.
 
   Let nu_constant : forall (y:A) (u v:x = y), nu u = nu v.
+  Proof. 
     intros.
     unfold nu in |- *.
     case (eq_dec x y); intros.

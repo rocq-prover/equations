@@ -42,17 +42,17 @@ module StringSet = Set.Make(StringOrd)
 (** We keep a table of which derives have been performed yet for a given global reference. *)
 type derive_instance = (string * Names.GlobRef.t)
 
-type derive_instance_map = StringSet.t Names.GlobRef.Map.t
+type derive_instance_map = StringSet.t Names.GlobRef.Map_env.t
 
-let derived_instances : derive_instance_map ref = Summary.ref Names.GlobRef.Map.empty ~name:"derived-instances"
+let derived_instances : derive_instance_map ref = Summary.ref Names.GlobRef.Map_env.empty ~name:"derived-instances"
 
 let cache_instance (derive, gr) =
   let grderives = 
-    match Names.GlobRef.Map.find_opt gr !derived_instances with
+    match Names.GlobRef.Map_env.find_opt gr !derived_instances with
     | Some s -> s
     | None -> StringSet.empty
   in
-  derived_instances := Names.GlobRef.Map.add gr (StringSet.add derive grderives) !derived_instances
+  derived_instances := Names.GlobRef.Map_env.add gr (StringSet.add derive grderives) !derived_instances
 
 let subst_instance (subst, (derive, gr)) =
   (derive, fst (Globnames.subst_global subst gr))
@@ -75,7 +75,7 @@ let register_instance decl =
 
 let check_derive s gr =
   try
-    let grds = Names.GlobRef.Map.find gr !derived_instances in
+    let grds = Names.GlobRef.Map_env.find gr !derived_instances in
     StringSet.mem s grds
   with Not_found -> false
 

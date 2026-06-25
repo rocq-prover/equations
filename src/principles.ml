@@ -1672,7 +1672,7 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
   in
   let declare_ind () =
     let inds, univs, sort = List.fold_left declare_one_ind ([], Univ.Level.Set.empty, Sorts.prop) ind_stmts in
-    let sigma = Evd.restrict_universe_context !evd univs in
+    let sigma = Evd.restrict_ustate !evd univs in
     let sigma = Evd.minimize_universes sigma in
     (* FIXME: try to implement a sane handling of universe state threading *)
     let to_constr sigma c =
