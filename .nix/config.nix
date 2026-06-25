@@ -68,7 +68,7 @@ with builtins; with (import <nixpkgs> {}).lib;
     ## You can override Coq and other Coq coqPackages
     ## through the following attribute
     # coqPackages.coq.override.version = "8.11";
-    # ocamlPackages.dune_3.override.versiobn = "3.20.1";
+    ocamlPackages.dune_3.override.version = "3.21";
 
     ## In some cases, light overrides are not available/enough
     ## in which case you can use either
