@@ -1,5 +1,5 @@
-(lang dune 3.13)
-(using coq 0.8)
+(lang dune 3.21)
+(using rocq 0.11)
 (name rocq-equations)
 (source (github mattam82/Coq-Equations))
 (license LGPL-2.1-only)
@@ -21,7 +21,8 @@
   "logpath:Equations"))
  (depends
    (ocaml (>= 4.10.0))
-   (rocq-prover (>= "9.0~"))
+   (rocq-core (= "dev"))
+   (rocq-stdlib (= "dev"))
    (ocaml-lsp-server :with-dev-setup)))
 
 (package 
@@ -38,7 +39,6 @@
   "logpath:Equations"))
  (depends
    (ocaml (>= 4.10.0))
-   (rocq-prover (>= "9.0~"))
    (ocaml-lsp-server :with-dev-setup)
    rocq-equations
    coq-hott))
