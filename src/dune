@@ -2,8 +2,6 @@
  (name equations_plugin)
  (public_name rocq-equations.plugin)
  (flags :standard -w -9-27+60 -warn-error -3-9-32-33-50)
- (libraries rocq-runtime.plugins.cc rocq-runtime.plugins.extraction)
- (preprocess
-  (pps ppx_optcomp -- -cookie "ppx_optcomp.env=env ~rocq:(Defined \"%{coq:version.major}.%{coq:version.minor}\")")))
+ (libraries rocq-runtime.plugins.cc rocq-runtime.plugins.extraction))
 
 (coq.pp (modules g_equations))
