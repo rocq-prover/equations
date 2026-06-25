@@ -3,18 +3,20 @@ From Stdlib Require Import Eqdep_dec.
 From Stdlib Require Import Peano_dec.
 From Stdlib Require Import List.
 From Stdlib Require Import Recdef.
-
+Set Warnings "-missing-proof-command".
 (**
   Arithmétique
 *)
 
 (* Sur la soustraction (entière) *)
 Lemma minus_Sn_n : forall (n:nat), (minus (S n) n) = (S 0).
+Proof.
 induction n; auto.
 Qed.
 
 Lemma lt_S_r : forall (n1 n2:nat),
   (lt n1 n2) -> exists (n:nat), n2 = (S n).
+Proof.
 destruct n2.
   intro. exfalso. apply (Nat.nlt_0_r n1). assumption.
   intro. exists n2. trivial.
@@ -22,6 +24,7 @@ Qed.
 
 Lemma minus_lt_S : forall (n1 n2:nat),
   (lt n1 n2) -> exists (n:nat), (minus n2 n1) = (S n).
+Proof.
 intros. elim (lt_S_r n1 n2 H). intros n H1. rewrite H1.
 exists (minus n n1). rewrite Nat.sub_succ_l.
   trivial.
@@ -30,12 +33,14 @@ Qed.
 
 (* Sur l'ordre strict 'lt' *)
 Lemma lt_1_0 : forall (n:nat), (lt n 1) -> (n=0).
+Proof.
 destruct n.
   auto.
   intro. inversion H. exfalso. apply (Nat.nle_succ_0 (S n)). assumption.
 Qed.
 
 Lemma lt_S_case : forall (m n:nat), (lt m (S n)) -> (lt m n) \/ (m=n).
+Proof.
 intros m n. generalize m. induction n.
   intros. rewrite (lt_1_0 m0 H). tauto.
   destruct m0.    
@@ -44,6 +49,7 @@ intros m n. generalize m. induction n.
 Qed.
 
 Lemma not_lt_Sn_n : forall (n:nat), not (lt (S n) n).
+Proof.
 induction n.
   auto with arith.
   intro. auto with arith.
@@ -51,6 +57,7 @@ Qed.
 
 (* Sur l'ordre large 'le' *)
 Lemma not_le_Sn_n : forall (n:nat), not (le (S n) n).
+Proof.
 induction n.
   auto with arith.
   intro. auto with arith.
@@ -59,6 +66,7 @@ Qed.
 (* Cas sur les entiers *)
 Lemma nat_compare_case : forall (n1 n2:nat),
  (lt n1 n2) \/ (n1=n2) \/ (lt n2 n1).
+Proof.
 induction n1.
   destruct n2.
     tauto.
@@ -878,6 +886,7 @@ Qed.
 
 Lemma rlex_nat3_4 : forall (x y z m : nat),
   (rlex_nat3 (S x, y, m) (S x, S y, z)).
+Proof.
 unfold rlex_nat3. unfold make_mwlt. destruct y.
   intros. simpl. apply wlt_wlt. 
     auto with arith.

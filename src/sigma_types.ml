@@ -435,7 +435,7 @@ let uncurry_hyps name =
     let hyps, _ =
       List.split_when (fun d ->
           is_global env sigma (Lazy.force coq_end_of_section) (get_named_type d)
-          || is_section_variable (Global.env ()) (get_id d)) hyps in
+          || is_section_variable_env env (get_id d)) hyps in
     let ondecl (sigma, acc, ty) d =
       let (dna, _, dty) = to_named_tuple d in
       let sigma, sigmaI = new_global sigma (Lazy.force coq_sigmaI) in

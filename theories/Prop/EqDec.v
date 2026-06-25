@@ -87,6 +87,7 @@ Section EqdepDec.
     end.
 
   Let nu_constant : forall (y:A) (u v:x = y), nu u = nu v.
+  Proof.
     intros.
     unfold nu in |- *.
     case (eq_dec x y); intros.
@@ -189,7 +190,7 @@ Section PointEqdepDec.
     end.
 
   Let nu_constant : forall (y:A) (u v:x = y), nu u = nu v.
-    intros.
+  Proof. intros.
     unfold nu in |- *.
     case (eq_dec_point y); intros.
     reflexivity.
@@ -291,6 +292,7 @@ Section PEqdepDec.
     end.
 
   Let nu_constant : forall (y:A) (u v:x = y), nu u = nu v.
+  Proof.
     intros.
     unfold nu in |- *.
     case (eq_dec x y); intros.

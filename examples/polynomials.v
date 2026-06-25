@@ -850,16 +850,20 @@ Ltac bool_tauto_with f :=
 (** Examples *)
 
 Goal forall a b, andb a b = andb b a.
+Proof.
   bool_tauto_with @correctness_heyting.
 Qed.
 Goal forall a b, andb (negb a) (negb b) = negb (orb a b).
+Proof.
   bool_tauto_with @correctness_heyting.
 Qed.
 Goal forall a b, orb (negb a) (negb b) = negb (andb a b).
+Proof.
   bool_tauto_with @correctness_heyting.
 Qed.
 
 Example neg_involutive: forall a, orb (negb a) a = true.
+Proof.
 Fail bool_tauto_with @correctness_heyting.
 bool_tauto_with @correctness_classical.
 Qed.

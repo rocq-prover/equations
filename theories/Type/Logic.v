@@ -46,7 +46,7 @@ Import Id_Notations.
 Module Sigma_Notations.
 
 Notation "'Σ' x .. y , P" := (sigma (fun x => .. (sigma (fun y => P)) ..))
-  (at level 200, x binder, y binder, right associativity,
+  (at level 10, x binder, y binder, P at level 200,
   format "'[  ' '[  ' Σ  x  ..  y ']' ,  '/' P ']'") : type_scope.
 
 Notation "( x , .. , y , z )" :=

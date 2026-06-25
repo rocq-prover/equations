@@ -196,15 +196,13 @@ Notation "p ..1" := (pr1_path p) (at level 1).
 
 Definition pr2_path {A} `{P : A -> Type} {u v : sigma P} (p : u = v)
 : p..1 # u.2 = v.2.
-  destruct p. apply 1.
-Defined.
+Proof. destruct p. apply 1. Defined.
 
 Notation "p ..2" := (pr2_path p) (at level 1).
 
 Definition eta_path_sigma_uncurried {A} `{P : A -> Type} {u v : sigma P}
            (p : u = v) : path_sigma_uncurried _ _ (p..1, p..2) = p.
-  destruct p. apply 1.
-Defined.
+Proof. destruct p. apply 1. Defined.
 
 Definition eta_path_sigma A `{P : A -> Type} {u v : sigma P} (p : u = v)
 : path_sigma _ _ (p..1) (p..2) = p
@@ -212,6 +210,7 @@ Definition eta_path_sigma A `{P : A -> Type} {u v : sigma P} (p : u = v)
 
 Definition path_sigma_equiv {A : Type} (P : A -> Type) (u v : sigma P):
   IsEquiv (path_sigma_uncurried u v).
+Proof.
   unshelve refine (BuildIsEquiv _ _ _).
   - exact (fun r => (r..1, r..2)).
   - intro. apply eta_path_sigma_uncurried.
@@ -409,6 +408,7 @@ Defined.
 
 Definition transport_inv A {P : A -> Type} (x y :A) (e : x = y) (u:P x) v:
   u = e^ # v -> e # u = v.
+Proof.
   destruct e. exact id. 
 Defined.
 
@@ -458,6 +458,7 @@ Definition path_contr {A} {H:Contr A} (x y : A) : x = y
   := concat (id_sym (@contr _ H x)) (@contr _ H y).
 
 Definition path2_contr {A} {H:Contr A} {x y : A} (p q : x = y) : p = q.
+Proof.
   assert (K : forall (r : x = y), r = path_contr x y).
   intro r; destruct r; symmetry; now apply concat_Vp.
   apply (transitivity (y:=path_contr x y)).

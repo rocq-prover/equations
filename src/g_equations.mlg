@@ -499,8 +499,9 @@ END
 TACTIC EXTEND is_secvar
 | [ "is_secvar" constr(x) ] ->
    { enter (fun gl ->
+     let env = Proofview.Goal.env gl in
      match kind (Proofview.Goal.sigma gl) x with
-     | Var id when Termops.is_section_variable (Global.env ()) id -> Proofview.tclUNIT ()
+     | Var id when Termops.is_section_variable_env env id -> Proofview.tclUNIT ()
      | _ -> Tacticals.tclFAIL (str "Not a section variable or hypothesis")) }
 END
 
