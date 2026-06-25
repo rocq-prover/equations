@@ -20,7 +20,8 @@ bug-reports: "https://github.com/mattam82/Coq-Equations/issues"
 depends: [
   "dune" {>= "3.21"}
   "ocaml" {>= "4.10.0"}
-  "rocq-prover" {= "dev"}
+  "rocq-core" {= "dev"}
+  "rocq-stdlib" {= "dev"}
   "ocaml-lsp-server" {with-dev-setup}
   "odoc" {with-doc}
 ]

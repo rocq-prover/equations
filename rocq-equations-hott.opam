@@ -18,9 +18,10 @@ tags: [
 homepage: "https://mattam82.github.io/Coq-Equations"
 bug-reports: "https://github.com/mattam82/Coq-Equations/issues"
 depends: [
-  "dune" {>= "3.13"}
+  "dune" {>= "3.21"}
   "ocaml" {>= "4.10.0"}
-  "rocq-prover" {>= "9.0~"}
+  "rocq-core" {= "dev"}
+  "rocq-stdlib" {= "dev"}
   "ocaml-lsp-server" {with-dev-setup}
   "rocq-equations"
   "coq-hott"

@@ -21,7 +21,8 @@
   "logpath:Equations"))
  (depends
    (ocaml (>= 4.10.0))
-   (rocq-prover (= "dev"))
+   (rocq-core (= "dev"))
+   (rocq-stdlib (= "dev"))
    (ocaml-lsp-server :with-dev-setup)))
 
 (package 
@@ -38,7 +39,6 @@
   "logpath:Equations"))
  (depends
    (ocaml (>= 4.10.0))
-   (rocq-prover (>= "9.0~"))
    (ocaml-lsp-server :with-dev-setup)
    rocq-equations
    coq-hott))
