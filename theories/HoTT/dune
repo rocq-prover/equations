@@ -1,4 +1,4 @@
-(coq.theory
+(rocq.theory
  (name Equations.HoTT)
  (package rocq-equations-hott)
  (modules :standard)
