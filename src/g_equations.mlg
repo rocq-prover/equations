@@ -325,7 +325,7 @@ GRAMMAR EXTEND Gram
         modl = G_vernac.syntax_modifiers;
         scopt = OPT [ ":"; sc = IDENT -> { sc } ] -> {
         Inr { Vernacexpr.ntn_decl_string = ntn; ntn_decl_interp = c;
-              ntn_decl_modifiers = modl; ntn_decl_scope = scopt } }
+              ntn_decl_modifiers = modl; ntn_decl_scope = scopt; ntn_decl_loc = Some loc } }
       | p = proto -> { Inl (p (Some Syntax.Nested)) } ] ]
   ;
 
@@ -350,7 +350,7 @@ GRAMMAR EXTEND Gram
         modl = G_vernac.syntax_modifiers;
         scopt = OPT [ ":"; sc = IDENT -> { sc } ] -> {
         Inr { Vernacexpr.ntn_decl_string = ntn; ntn_decl_interp = c;
-              ntn_decl_modifiers = modl; ntn_decl_scope = scopt } }
+              ntn_decl_modifiers = modl; ntn_decl_scope = scopt; ntn_decl_loc = Some loc } }
       | p = proto -> { Inl (p (Some Syntax.Mutual)) } ] ]
   ;
   local_where:
