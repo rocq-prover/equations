@@ -19,3 +19,8 @@ val autounfold_ref : Names.GlobRef.t -> unit Proofview.tactic
   [ctx |- ?P args = ty] and then refines the goal with [c]. *)
 
 val refine_ho : EConstr.t -> unit Proofview.tactic
+
+(** Introduce the next hypothesis reusing the binder name verbatim (modulo
+    freshening by subscripts), bypassing name mangling ([Mangle Names]).
+    Falls back to [intro] on anonymous binders. *)
+val intro_binder_name : unit Proofview.tactic

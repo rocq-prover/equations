@@ -115,13 +115,21 @@ and pat_of_constr env sigma c =
   | _ -> PInac c
 
 
-let rec pat_to_user_pat ?(avoid = ref Id.Set.empty) ?loc ctx = function
+let rec pat_to_user_pat ?(avoid = ref Id.Set.empty) ?(keep_names = false) ?loc ctx = function
   | PRel i ->
     let decl = List.nth ctx (pred i) in
     let name = Context.Rel.Declaration.get_name decl in
-    let id = Namegen.next_name_away name !avoid in
+    (* In [keep_names] mode, a variable pattern reuses the context binder name
+       verbatim (with [Implicit] provenance), so that names of pre-existing
+       hypotheses survive freshening, in particular the mangling done by
+       [Mangle Names]. *)
+    let id, prov =
+      match name with
+      | Name id when keep_names && not (Id.Set.mem id !avoid) -> id, Syntax.Implicit
+      | _ -> Namegen.next_name_away name !avoid, Syntax.User
+    in
     avoid := Id.Set.add id !avoid;
-    Some (DAst.make ?loc (Syntax.(PUVar (id, User))))
+    Some (DAst.make ?loc (Syntax.PUVar (id, prov)))
   | PCstr (((ind, _ as cstr), _), pats) ->
     let n = Inductiveops.inductive_nparams (Global.env()) ind in
     let _, pats = List.chop n pats in
@@ -131,12 +139,12 @@ let rec pat_to_user_pat ?(avoid = ref Id.Set.empty) ?loc ctx = function
     avoid := Id.Set.add id !avoid;
     Some (DAst.make ?loc (Syntax.(PUVar (id, Generated))))
   | PHide i -> None
-and pats_to_lhs ?(avoid = ref Id.Set.empty) ?loc ctx pats =
-  List.map_filter (pat_to_user_pat ~avoid ?loc ctx) pats
+and pats_to_lhs ?(avoid = ref Id.Set.empty) ?(keep_names = false) ?loc ctx pats =
+  List.map_filter (pat_to_user_pat ~avoid ~keep_names ?loc ctx) pats
 
-let context_map_to_lhs ?(avoid = Id.Set.empty) ?loc map =
+let context_map_to_lhs ?(avoid = Id.Set.empty) ?(keep_names = false) ?loc map =
   let avoid = ref avoid in
-  List.rev (pats_to_lhs ~avoid ?loc map.src_ctx map.map_inst)
+  List.rev (pats_to_lhs ~avoid ~keep_names ?loc map.src_ctx map.map_inst)
 
 let do_renamings env sigma ctx =
   let avoid, ctx' =

@@ -1028,6 +1028,24 @@ exception UnfaithfulSplit of (Loc.t option * Pp.t)
 let rename_domain env sigma bindings map =
   let open Context.Rel.Declaration in
   let { src_ctx = ctx; map_inst = p; tgt_ctx = ctx' } = map in
+  (* Implicitly named variables (e.g. preexisting hypothesis names) may be
+     shadowed by explicit pattern names or other implicit names: drop their
+     bindings instead of producing two hypotheses with the same name. *)
+  let bindings =
+    let taken =
+      Int.Map.fold
+        (fun _ (id, _, gen) acc -> if gen == User then Id.Set.add id acc else acc)
+        bindings Id.Set.empty
+    in
+    let taken = ref taken in
+    Int.Map.filter (fun _ (id, _, gen) ->
+        match gen with
+        | Implicit ->
+          if Id.Set.mem id !taken then false
+          else (taken := Id.Set.add id !taken; true)
+        | _ -> true)
+      bindings
+  in
   let avoid =
     Int.Map.fold
       (fun i (id, inacc, generated) acc -> if generated != Generated then Id.Set.add id acc else acc)
@@ -1082,18 +1100,23 @@ let rec covering_aux env evars p data prev (clauses : (pre_clause * (int * int))
        if !Equations_common.debug then Feedback.msg_debug (str "succeeded with substitution: " ++ 
         prlist_with_sep spc (fun ((loc, x, prov), pat) -> 
         hov 2 (pr_provenance ~with_gen:true (Id.print x) prov ++ str" = " ++ pr_pat env !evars pat ++ spc ())) s);
-       let _check_aliases = 
+       let _check_aliases =
         let check acc ((loc, x, gen), pat) =
           match Id.Map.find x acc with
           | exception Not_found -> Id.Map.add x (loc, gen, pat) acc
           | (loc', gen', pat') ->
-              if eq_pat_mod_inacc env !evars pat pat' then 
+              if eq_pat_mod_inacc env !evars pat pat' then
                 if gen == Generated then Id.Map.add x (loc', gen', pat') acc
                 else Id.Map.add x (loc, gen, pat) acc
               else if data.flags.allow_aliases then acc
-              else 
+              (* An implicitly named variable (e.g. a preexisting hypothesis
+                 name in [dependent elimination]) may be shadowed by an
+                 explicit pattern name: keep the explicit one. *)
+              else if gen == Implicit then acc
+              else if gen' == Implicit then Id.Map.add x (loc, gen, pat) acc
+              else
                 let env = push_rel_context prob.src_ctx env in
-                let loc, pat, pat' = 
+                let loc, pat, pat' =
                   if loc_before loc loc' then loc', pat, pat'
                   else loc, pat', pat
                 in
@@ -1121,7 +1144,11 @@ let rec covering_aux env evars p data prev (clauses : (pre_clause * (int * int))
               | Generated, (User | Implicit) -> (Int.Map.add i (x', inacc && inacc', gen') bindings, s)
               | Generated, Generated -> (Int.Map.add i (x, inacc && inacc', gen) bindings, s)
               | _, Generated -> (Int.Map.add i (x, inacc && inacc', gen) bindings, s)
-              | _, _ -> 
+              (* An explicit pattern name takes priority over an implicit one
+                 (e.g. a preexisting hypothesis name in [dependent elimination]). *)
+              | User, Implicit -> (Int.Map.add i (x, inacc && inacc', gen) bindings, s)
+              | Implicit, User -> (Int.Map.add i (x', inacc && inacc', gen') bindings, s)
+              | _, _ ->
                 if not (Id.equal x x') then
                   (* We allow aliasing of implicit variable names resulting from forcing a pattern *)
                   if not data.flags.allow_aliases && (gen == User && gen' == User) then
