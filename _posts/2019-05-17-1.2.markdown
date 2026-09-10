@@ -38,12 +38,12 @@ announcements describe the new features of the 1.2 version.  See the
 new features. The [Equations Reloaded][equations-reloaded]
 paper also provides an introduction to the new version.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.2-8.9
-[12beta2release]: http://mattam82.github.io/Coq-Equations/equations/2019/03/19/1.2beta2.html
-[12betarelease]: http://mattam82.github.io/Coq-Equations/equations/2019/01/28/1.2beta.html
-[www]: http://mattam82.github.io/Coq-Equations
-[refman]: http://github.com/mattam82/Coq-Equations/raw/master/doc/equations.pdf
-[issues]: http://github.com/mattam82/Coq-Equations/issues
-[equations-reloaded]: http://mattam82.github.io/Coq-Equations/equations-reloaded.html
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.2-8.9
+[12beta2release]: http://rocq-prover.github.io/equations/equations/2019/03/19/1.2beta2.html
+[12betarelease]: http://rocq-prover.github.io/equations/equations/2019/01/28/1.2beta.html
+[www]: http://rocq-prover.github.io/equations
+[refman]: http://github.com/rocq-prover/equations/raw/master/doc/equations.pdf
+[issues]: http://github.com/rocq-prover/equations/issues
+[equations-reloaded]: http://rocq-prover.github.io/equations/equations-reloaded.html
 
 -- Matthieu Sozeau

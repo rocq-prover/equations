@@ -97,17 +97,17 @@ The specification of this test is that it returns true iff the variable is indee
 
 <div class="doc">
 <ul class="doclist">
-<li> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> represents the null polynomial.
+<li> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> represents the null polynomial.
 
 </li>
-<li> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_c"><span class="id" title="constructor">poly_c</span></a></span> <span class="inlinecode"><span class="id" title="var">c</span></span> represents the constant polynomial <span class="inlinecode"><span class="id" title="var">c</span></span> where <span class="inlinecode"><span class="id" title="var">c</span></span> is non-zero (i.e. has a proof of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#IsNZ"><span class="id" title="definition">IsNZ</span></a></span> <span class="inlinecode"><span class="id" title="var">c</span></span>).
+<li> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_c"><span class="id" title="constructor">poly_c</span></a></span> <span class="inlinecode"><span class="id" title="var">c</span></span> represents the constant polynomial <span class="inlinecode"><span class="id" title="var">c</span></span> where <span class="inlinecode"><span class="id" title="var">c</span></span> is non-zero (i.e. has a proof of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#IsNZ"><span class="id" title="definition">IsNZ</span></a></span> <span class="inlinecode"><span class="id" title="var">c</span></span>).
 
 </li>
-<li> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode"><span class="id" title="var">Q</span></span> represents the injection of <span class="inlinecode"><span class="id" title="var">Q</span></span>, a
+<li> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode"><span class="id" title="var">Q</span></span> represents the injection of <span class="inlinecode"><span class="id" title="var">Q</span></span>, a
   polynomial on <span class="inlinecode"><span class="id" title="var">n</span></span> variables, as a polynomial on <span class="inlinecode"><span class="id" title="var">n</span>+1</span> variables.
 
 </li>
-<li> Finally, <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">Q</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode">(<a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span> represents 
+<li> Finally, <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">Q</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode">(<a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span> represents 
   where <span class="inlinecode"><span class="id" title="var">P</span></span> cannot mention the variable  but <span class="inlinecode"><span class="id" title="var">Q</span></span> can mention
   the variables up to and including , and the multiplication is
   not trivial as <span class="inlinecode"><span class="id" title="var">Q</span></span> is non-null.
@@ -133,7 +133,7 @@ similar encoding is actually used in the <span class="inlinecode"><span class="i
 <div class="doc">
 In addition to the usual eliminators of the inductive type
   generated by <span class="inlinecode"><span class="id" title="var">Coq</span></span>, we automatically derive a few constructions on
-  this <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> datatype, and the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> datatype that follows, 
+  this <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> datatype, and the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> datatype that follows, 
   that will be used by the <span class="inlinecode"><span class="id" title="keyword">Equations</span></span> command:
 
 <div class="paragraph"> </div>
@@ -144,13 +144,13 @@ In addition to the usual eliminators of the inductive type
   natural number in this case.
 
 </li>
-<li> Its <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Prop.Classes.html#NoConfusion"><span class="id" title="method">NoConfusion</span></a></span> property used to
-  simplify equalities between constructors of the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> type 
+<li> Its <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Prop.Classes.html#NoConfusion"><span class="id" title="method">NoConfusion</span></a></span> property used to
+  simplify equalities between constructors of the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> type 
   (equation ).
 
 </li>
 <li> Finally, its <span class="inlinecode"><span class="id" title="var">Subterm</span></span> relation, to be used when performing
-  well-founded recursion on <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span>. 
+  well-founded recursion on <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span>. 
 </li>
 </ul>
 
@@ -163,7 +163,7 @@ In addition to the usual eliminators of the inductive type
 
   Monomials represent parts of polynoms, and one can compute the
   coefficient constant by which each monomial is multiplied in a given
-  polynom. Again the index of a <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> gives the number of its free variables. 
+  polynom. Again the index of a <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> gives the number of its free variables. 
 </div>
 <div class="code">
 
@@ -207,28 +207,28 @@ The definition can be done using either the usual structural
   fixpoint combinator as the recursion is on direct subterms of the
   monomial, but in general it could be arbitrarily complicated, so we
   present a version allowing deep pattern-matching and recursion. Note
-  that this means we lose the definitional behavior of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> during
+  that this means we lose the definitional behavior of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> during
   proofs on open terms, but this can advantageously be replaced using
   explicit <span class="inlinecode"><span class="id" title="tactic">rewrite</span></span> calls, providing much more control over
   simplification than the reduction tactics, especially in presence of
-  recursive functions. The <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> function still uses no axioms, 
+  recursive functions. The <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> function still uses no axioms, 
   so it can be used to compute as part of a reflexive tactic for example.
 
 <div class="paragraph"> </div>
 
-  We want to do recursion on the (dependent) <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> argument,
-  using the derived <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono_subterm"><span class="id" title="definition">mono_subterm</span></a></span> relation, which expects an element in
-  the signature of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span>, <span class="inlinecode">{</span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a></span> <span class="inlinecode">&amp;</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">}</span>, so we use <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#pack"><span class="id" title="abbreviation">pack</span></a></span> <span class="inlinecode"><span class="id" title="var">m</span></span> to
-  lift <span class="inlinecode"><span class="id" title="var">m</span></span> into its signature type (<span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#pack"><span class="id" title="abbreviation">pack</span></a></span> is just an abbreviation for
-  the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Signature.html#signature_pack"><span class="id" title="definition">signature_pack</span></a></span> overloaded constant defined in ).
+  We want to do recursion on the (dependent) <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> argument,
+  using the derived <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono_subterm"><span class="id" title="definition">mono_subterm</span></a></span> relation, which expects an element in
+  the signature of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span>, <span class="inlinecode">{</span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a></span> <span class="inlinecode">&amp;</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">}</span>, so we use <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#pack"><span class="id" title="abbreviation">pack</span></a></span> <span class="inlinecode"><span class="id" title="var">m</span></span> to
+  lift <span class="inlinecode"><span class="id" title="var">m</span></span> into its signature type (<span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#pack"><span class="id" title="abbreviation">pack</span></a></span> is just an abbreviation for
+  the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Signature.html#signature_pack"><span class="id" title="definition">signature_pack</span></a></span> overloaded constant defined in ).
 
 <div class="paragraph"> </div>
 
   The rest of the definition is standard: to fetch a monomial
   coefficient, we simultaneously pattern-match on the monomial and
   polynomial. Note that many cases are impossible due to the invariants
-  enforced in <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span>. For example <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mono_z"><span class="id" title="constructor">mono_z</span></a></span> can only match
-  polynomials built from <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> or <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_c"><span class="id" title="constructor">poly_c</span></a></span>, etc. 
+  enforced in <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono"><span class="id" title="inductive">mono</span></a></span>. For example <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mono_z"><span class="id" title="constructor">mono_z</span></a></span> can only match
+  polynomials built from <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> or <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_c"><span class="id" title="constructor">poly_c</span></a></span>, etc. 
 <div class="paragraph"> </div>
 
 <a id="lab4"></a><h3 class="section">Two detailed proofs</h3>
@@ -244,7 +244,7 @@ The definition can be done using either the usual structural
  To show this, we need a lemma that shows that every non-null polynomial,
     has a monomial with non-null coefficient:
     this proof is done by dependent induction on the polynomial <span class="inlinecode"><span class="id" title="var">p</span></span>.
-    Note that the index of <span class="inlinecode"><span class="id" title="var">p</span></span> rules out the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> case. 
+    Note that the index of <span class="inlinecode"><span class="id" title="var">p</span></span> rules out the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> case. 
 </div>
 <div class="code">
 
@@ -273,9 +273,9 @@ The definition can be done using either the usual structural
 <div class="doc">
 Throughout the proof, we use the <span class="inlinecode"><span class="id" title="var">simp</span></span> tactic defined by
        which is a wrapper around <span class="inlinecode"><span class="id" title="tactic">autorewrite</span></span> using the hint
-      database associated to the constant <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span>: the database
-      contains the defining equations of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> as rewrite rules
-      that can be used to simplify calls to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> in the goal. 
+      database associated to the constant <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span>: the database
+      contains the defining equations of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> as rewrite rules
+      that can be used to simplify calls to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#get_coef"><span class="id" title="definition">get_coef</span></a></span> in the goal. 
 </div>
 <div class="code">
 
@@ -300,19 +300,19 @@ Throughout the proof, we use the <span class="inlinecode"><span class="id" title
 <div class="doc">
 We first do an induction on <span class="inlinecode"><span class="id" title="var">p1</span></span> and then eliminate (dependently)
         <span class="inlinecode"><span class="id" title="var">p2</span></span>, the first two branches need to consider variable-closed <span class="inlinecode"><span class="id" title="var">p2</span></span>s
-        while the next two branches have <span class="inlinecode"><span class="id" title="var">p2</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode">(<a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span>, hence the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> 
-        and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> patterns. The elided rest of the tactic solves simple subgoals. 
+        while the next two branches have <span class="inlinecode"><span class="id" title="var">p2</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode">(<a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span>, hence the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> 
+        and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> patterns. The elided rest of the tactic solves simple subgoals. 
 
 <div class="paragraph"> </div>
 
-      We now focus on the case for <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> on both sides. 
+      We now focus on the case for <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> on both sides. 
       After some simplifications of the induction hypothesis using 
       the <span class="inlinecode"><span class="id" title="var">Hcoef</span></span> hypothesis, we get to the following goal:
 <br/>
-<span class="inlinecode">&nbsp;&nbsp;(<span class="id" title="var">b</span>, <span class="id" title="var">b'</span> : <a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a>) (<span class="id" title="var">n</span> : <a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>) (<span class="id" title="var">p1</span> : <a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a> <span class="id" title="var">b</span> <span class="id" title="var">n</span>) (<span class="id" title="var">p2</span> : <a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a> <span class="id" title="var">b'</span> <span class="id" title="var">n</span>)<br/>
+<span class="inlinecode">&nbsp;&nbsp;(<span class="id" title="var">b</span>, <span class="id" title="var">b'</span> : <a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a>) (<span class="id" title="var">n</span> : <a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>) (<span class="id" title="var">p1</span> : <a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a> <span class="id" title="var">b</span> <span class="id" title="var">n</span>) (<span class="id" title="var">p2</span> : <a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a> <span class="id" title="var">b'</span> <span class="id" title="var">n</span>)<br/>
 &nbsp;&nbsp;<span class="id" title="var">IHp1</span> : (<span class="id" title="var">b</span>; <span class="id" title="var">p1</span>) = (<span class="id" title="var">b'</span>; <span class="id" title="var">p2</span>)<br/>
 &nbsp;&nbsp;============================<br/>
-&nbsp;&nbsp;(<span class="id" title="var">b</span>; <a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a> <span class="id" title="var">p1</span>) = (<span class="id" title="var">b'</span>; <a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a> <span class="id" title="var">p2</span>)
+&nbsp;&nbsp;(<span class="id" title="var">b</span>; <a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a> <span class="id" title="var">p1</span>) = (<span class="id" title="var">b'</span>; <a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a> <span class="id" title="var">p2</span>)
 <div class="paragraph"> </div>
 
 </span>
@@ -332,7 +332,7 @@ We first do an induction on <span class="inlinecode"><span class="id" title="var
 <div class="doc">
 The next step is to give an evaluation semantics to polynomials.
     We program <span class="inlinecode"><span class="id" title="tactic">eval</span></span> <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode"><span class="id" title="var">v</span></span> where <span class="inlinecode"><span class="id" title="var">v</span></span> is a valuation in <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Numbers.BinNums.html#Z"><span class="id" title="inductive">Z</span></a></span> for all the
-    variables in <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">n</span></span>. 
+    variables in <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">n</span></span>. 
 </div>
 <div class="code">
 
@@ -375,9 +375,9 @@ This is a typical case where the proof directly follows the definition
 
 <div class="doc">
 This leaves us with two goals as the <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a></span> index in <span class="inlinecode"><span class="id" title="var">p</span></span> implies
-  that the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_c"><span class="id" title="constructor">poly_c</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> clauses do not need to be considered.
-  We have to show <span class="inlinecode">0</span> <span class="inlinecode">=</span> <span class="inlinecode">0</span> for the case <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> and <span class="inlinecode"><span class="id" title="tactic">eval</span></span> <span class="inlinecode"><span class="id" title="var">q</span></span> <span class="inlinecode"><span class="id" title="var">v</span></span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>
-  for the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> recursive constructor, in which case the conclusion
+  that the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_c"><span class="id" title="constructor">poly_c</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> clauses do not need to be considered.
+  We have to show <span class="inlinecode">0</span> <span class="inlinecode">=</span> <span class="inlinecode">0</span> for the case <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_z"><span class="id" title="constructor">poly_z</span></a></span> and <span class="inlinecode"><span class="id" title="tactic">eval</span></span> <span class="inlinecode"><span class="id" title="var">q</span></span> <span class="inlinecode"><span class="id" title="var">v</span></span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>
+  for the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l"><span class="id" title="constructor">poly_l</span></a></span> recursive constructor, in which case the conclusion
   directly follows from the induction hypothesis correspondinng to the
   recursive call. The second subgoal is hence discharged with an
   <span class="inlinecode"><span class="id" title="tactic">assumption</span></span> call.
@@ -387,7 +387,7 @@ This leaves us with two goals as the <span class="inlinecode"><a class="idref" h
   Addition is defined on two polynomials with the same number of variables and returns
   a (possibly null) polynomial with the same number of variables.
   We define an injection function to constructs objects in the dependent pair type
-  <span class="inlinecode">{<span class="id" title="var">b</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a></span> <span class="inlinecode">&amp;</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="var">n</span>}</span>. 
+  <span class="inlinecode">{<span class="id" title="var">b</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a></span> <span class="inlinecode">&amp;</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly"><span class="id" title="inductive">poly</span></a></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="var">n</span>}</span>. 
 </div>
 <div class="code">
 
@@ -401,7 +401,7 @@ This leaves us with two goals as the <span class="inlinecode"><a class="idref" h
 The definition shows the <span class="inlinecode"><span class="id" title="keyword">with</span></span> feature of Equations, allowing to
     add a nested pattern-matching while defining the function, here in
     one case to inject an integer into a polynomial and in the
-    <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span>, <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> case to inspect a recursive call. 
+    <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span>, <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_s"><span class="id" title="constructor">poly_s</span></a></span> case to inspect a recursive call. 
 </div>
 <div class="code">
 
@@ -431,7 +431,7 @@ The definition shows the <span class="inlinecode"><span class="id" title="keywor
 
 <div class="doc">
 The functional elimination principle can be derived all the same
-    for <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#plus"><span class="id" title="definition">plus</span></a></span>, allowing us to make quick work of the proof that it
+    for <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#plus"><span class="id" title="definition">plus</span></a></span>, allowing us to make quick work of the proof that it
     is a morphism for evaluation: 
 </div>
 <div class="code">
@@ -454,7 +454,7 @@ The functional elimination principle can be derived all the same
 </div>
 
 <div class="doc">
-We skip the rest of the operations definition, <span class="inlinecode"><span class="id" title="var">poly_mult</span></span>, <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_neg"><span class="id" title="definition">poly_neg</span></a></span> and
+We skip the rest of the operations definition, <span class="inlinecode"><span class="id" title="var">poly_mult</span></span>, <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_neg"><span class="id" title="definition">poly_neg</span></a></span> and
     <span class="inlinecode"><span class="id" title="var">poly_substract</span></span>. 
 </div>
 <div class="code">
@@ -519,8 +519,8 @@ Equality can be decided using the difference of polynoms
 <div class="doc">
 <a id="lab5"></a><h3 class="section">Two polynomials with the same values are syntacically equal.</h3>
 
- This is shown using <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_nz_eval"><span class="id" title="lemma">poly_nz_eval</span></a></span>: the difference of two polynomials with the same values is null.
- Then use <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_diff_z_eq"><span class="id" title="lemma">poly_diff_z_eq</span></a></span>
+ This is shown using <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_nz_eval"><span class="id" title="lemma">poly_nz_eval</span></a></span>: the difference of two polynomials with the same values is null.
+ Then use <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_diff_z_eq"><span class="id" title="lemma">poly_diff_z_eq</span></a></span>
  
 </div>
 <div class="code">
@@ -553,7 +553,7 @@ Equality can be decided using the difference of polynoms
  
 <div class="paragraph"> </div>
 
- The <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_l_or_s"><span class="id" title="definition">poly_l_or_s</span></a></span> definition is a smart constructor to construct
+ The <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_l_or_s"><span class="id" title="definition">poly_l_or_s</span></a></span> definition is a smart constructor to construct
     <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">×</span> <span class="inlinecode"><span class="id" title="var">q</span></span> when <span class="inlinecode"><span class="id" title="var">q</span></span> can be null. 
 </div>
 <div class="code">
@@ -601,7 +601,7 @@ Equality can be decided using the difference of polynoms
 
 <div class="doc">
 Finally, the multiplication definition. This relies on the
-   guard condition being able to unfold the definitions of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mult_l"><span class="id" title="definition">mult_l</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#mult_s"><span class="id" title="definition">mult_s</span></a></span> to
+   guard condition being able to unfold the definitions of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mult_l"><span class="id" title="definition">mult_l</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#mult_s"><span class="id" title="definition">mult_s</span></a></span> to
    see that multiplication is well-guarded. 
 </div>
 <div class="code">
@@ -698,7 +698,7 @@ The have a straightforward evaluation semantics to booleans, assuming
 </div>
 
 <div class="doc">
-<span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#close_formula"><span class="id" title="definition">close_formula</span></a></span> allows to obtain a formula with a fixed finite number of free variables from
+<span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#close_formula"><span class="id" title="definition">close_formula</span></a></span> allows to obtain a formula with a fixed finite number of free variables from
    a formula with with variables in <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a></span>. 
 </div>
 <div class="code">
@@ -728,8 +728,8 @@ The have a straightforward evaluation semantics to booleans, assuming
 </div>
 
 <div class="doc">
-Definitions of constant 0 <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_zero"><span class="id" title="definition">poly_zero</span></a></span> and 1 <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_one"><span class="id" title="definition">poly_one</span></a></span> polynomials along with variable polynomials
-    <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.polynomials.html#poly_var"><span class="id" title="definition">poly_var</span></a></span> and corresponding evaluation lemmas 
+Definitions of constant 0 <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_zero"><span class="id" title="definition">poly_zero</span></a></span> and 1 <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_one"><span class="id" title="definition">poly_one</span></a></span> polynomials along with variable polynomials
+    <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.polynomials.html#poly_var"><span class="id" title="definition">poly_var</span></a></span> and corresponding evaluation lemmas 
 </div>
 <div class="code">
 

@@ -17,10 +17,10 @@ title: Equations
 author: Matthieu Sozeau
 email: matthieu.sozeau@inria.fr
 description: The Equations plugin
-baseurl: "/Coq-Equations" # the subpath of your site, e.g. /blog
-url: "http://mattam82.gihub.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/equations" # the subpath of your site, e.g. /blog
+url: "http://rocq-prover.gihub.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: mattam_
-github_username:  mattam82
+github_username:  rocq-prover
 
 # Build settings
 theme: minima

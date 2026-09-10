@@ -11,6 +11,6 @@ This new major version cleans up the input syntax (allowing to use less ";"), ma
 (disallowing dangerous shadowings) and better preserves user-given names by the `dependent elimination` and `funelim` 
 tactics for more robust proof scripts.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.3-8.15
-[refman]: https://github.com/mattam82/Coq-Equations/raw/master/doc/equations.pdf
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.3-8.15
+[refman]: https://github.com/rocq-prover/equations/raw/master/doc/equations.pdf
 -- Matthieu Sozeau

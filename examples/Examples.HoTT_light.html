@@ -113,7 +113,7 @@ Non-dependent cartesian products are just sigma types.
 </div>
 
 <div class="doc">
-We define <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#transport"><span class="id" title="definition">transport</span></a></span> with the arguments in the order we like. 
+We define <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#transport"><span class="id" title="definition">transport</span></a></span> with the arguments in the order we like. 
 </div>
 <div class="code">
 
@@ -158,7 +158,7 @@ Notation for the inverse
 
 <div class="paragraph"> </div>
 
- A typeclass that includes the data making <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.f"><span class="id" title="variable">f</span></a></span> into an adjoint equivalence
+ A typeclass that includes the data making <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.f"><span class="id" title="variable">f</span></a></span> into an adjoint equivalence
 </div>
 <div class="code">
 
@@ -486,7 +486,7 @@ One can use the shortcut notation <span class="inlinecode">|</span> <span class=
 
 <div class="doc">
 An example of the <span class="inlinecode"><span class="id" title="keyword">with</span></span> construct doing abstraction in the context and conclusion.
-    Here <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> is abstracted first, then <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.g"><span class="id" title="variable">g</span></a></span> <span class="inlinecode"><span class="id" title="var">x</span></span>, resulting in a goal <span class="inlinecode"><span class="id" title="var">gx</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.A"><span class="id" title="variable">A</span></a>,</span> <span class="inlinecode"><span class="id" title="var">px</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">gx</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span></span>.
+    Here <span class="inlinecode"><span class="id" title="var">p</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> is abstracted first, then <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.g"><span class="id" title="variable">g</span></a></span> <span class="inlinecode"><span class="id" title="var">x</span></span>, resulting in a goal <span class="inlinecode"><span class="id" title="var">gx</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.A"><span class="id" title="variable">A</span></a>,</span> <span class="inlinecode"><span class="id" title="var">px</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">gx</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">x</span></span>.
  
 </div>
 <div class="code">
@@ -823,7 +823,7 @@ We don't make this a typeclass instance, because we want to control when we are 
 
 <div class="paragraph"> </div>
 
- If <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.f"><span class="id" title="variable">f</span></a></span> is an equivalence, then so is <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#ap"><span class="id" title="definition">ap</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.f"><span class="id" title="variable">f</span></a></span>.  We are lazy and use <span class="inlinecode"><span class="id" title="var">adjointify</span></span>. 
+ If <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.f"><span class="id" title="variable">f</span></a></span> is an equivalence, then so is <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#ap"><span class="id" title="definition">ap</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.HoTT_light.html#Adjointify.f"><span class="id" title="variable">f</span></a></span>.  We are lazy and use <span class="inlinecode"><span class="id" title="var">adjointify</span></span>. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Global Instance</span> <span class="id" title="var">isequiv_ap</span> {<span class="id" title="var">A</span> <span class="id" title="var">B</span>} <span class="id" title="var">f</span> `{<span class="id" title="var">IsEquiv</span> <span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">f</span>} (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>)<br/>

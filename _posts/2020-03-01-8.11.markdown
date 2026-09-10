@@ -9,6 +9,6 @@ Release [1.2.1][release] of Equations is available for Coq 8.11,
 as source and through `opam` packages `coq-equations.1.2.1+8.11`,
 See [release notes][release] for details on this release.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.2-8.9
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.2-8.9
 
 -- Matthieu Sozeau

@@ -10,6 +10,6 @@ through `opam` packages `coq-equations.1.2.2+8.11`, `coq-equations.1.2.2+8.12`
 for Coq 8.11 and Coq 8.12. This is a bugfix releasxe and the first version available
 for Coq 8.12. See the [release][release] notes for details.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.2.2-8.11
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.2.2-8.11
 
 -- Matthieu Sozeau

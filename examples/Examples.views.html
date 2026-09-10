@@ -47,7 +47,7 @@
 <div class="paragraph"> </div>
 
   Suppose that we want to do case analysis on an inductive with
-  three constructors but only want to single out the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#cone"><span class="id" title="constructor">cone</span></a></span> constructor during
+  three constructors but only want to single out the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#cone"><span class="id" title="constructor">cone</span></a></span> constructor during
   pattern-matching: 
 </div>
 <div class="code">
@@ -72,8 +72,8 @@ The user can write a view function to implement this. First one needs to write
 </div>
 
 <div class="doc">
-One can derive an inductive representing the view of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span> as <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#cone"><span class="id" title="constructor">cone</span></a></span> and the two other
-    <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#ctwo"><span class="id" title="constructor">ctwo</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#cthree"><span class="id" title="constructor">cthree</span></a></span> cases lumbed together. 
+One can derive an inductive representing the view of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span> as <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#cone"><span class="id" title="constructor">cone</span></a></span> and the two other
+    <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#ctwo"><span class="id" title="constructor">ctwo</span></a></span> and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#cthree"><span class="id" title="constructor">cthree</span></a></span> cases lumbed together. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">three_two_view</span> : <span class="id" title="var">three</span> → <span class="id" title="keyword">Set</span> :=<br/>
@@ -84,7 +84,7 @@ One can derive an inductive representing the view of <span class="inlinecode"><a
 </div>
 
 <div class="doc">
-This view is obviously inhabited for any element in <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span>. 
+This view is obviously inhabited for any element in <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span>. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Equations</span> <span class="id" title="var">three_viewc</span> <span class="id" title="var">c</span> : <span class="id" title="var">three_two_view</span> <span class="id" title="var">c</span> :=<br/>
@@ -96,8 +96,8 @@ This view is obviously inhabited for any element in <span class="inlinecode"><a 
 
 <div class="doc">
 Using a <span class="inlinecode"><span class="id" title="keyword">with</span></span> clause one can pattern-match on the view argument to
-    do case splitting on <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span> using only two cases. In each branch,
-    one can see that the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span> variable is determined by the view pattern.  
+    do case splitting on <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span> using only two cases. In each branch,
+    one can see that the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span> variable is determined by the view pattern.  
 </div>
 <div class="code">
 <span class="id" title="keyword">Equations</span> <span class="id" title="var">onthree</span> (<span class="id" title="var">c</span> : <span class="id" title="var">three</span>) : <span class="id" title="var">three</span> :=<br/>
@@ -136,7 +136,7 @@ First alternative: using an inductive view
 </div>
 
 <div class="doc">
-This view is obviously inhabited for any element in <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span>. 
+This view is obviously inhabited for any element in <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.views.html#three"><span class="id" title="inductive">three</span></a></span>. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Equations</span> <span class="id" title="var">discr_10_view</span> <span class="id" title="var">c</span> : <span class="id" title="var">view_discr_10</span> <span class="id" title="var">c</span> :=<br/>

@@ -70,10 +70,10 @@ principle.
 
 See the [reference manual][refman] for details on these new features.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.2-beta2-8.9
-[12betarelease]: http://mattam82.github.io/Coq-Equations/equations/2019/01/28/1.2beta.html
-[www]: http://mattam82.github.io/Coq-Equations
-[refman]: http://github.com/mattam82/Coq-Equations/raw/master/doc/equations.pdf
-[issues]: http://github.com/mattam82/Coq-Equations/issues
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.2-beta2-8.9
+[12betarelease]: http://rocq-prover.github.io/equations/equations/2019/01/28/1.2beta.html
+[www]: http://rocq-prover.github.io/equations
+[refman]: http://github.com/rocq-prover/equations/raw/master/doc/equations.pdf
+[issues]: http://github.com/rocq-prover/equations/issues
 
 -- Matthieu Sozeau

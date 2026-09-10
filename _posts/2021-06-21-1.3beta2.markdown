@@ -10,6 +10,6 @@ for Coq 8.13. See the [release][release] notes and updated [reference manual][re
 This beta version cleans up the interpretation of patterns and allow better preservation of user-given names
 by the `dependent elimination` and `funelim` tactics for more robust proof scripts.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.3-8.13beta2
-[refman]: https://github.com/mattam82/Coq-Equations/raw/master/doc/equations.pdf
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.3-8.13beta2
+[refman]: https://github.com/rocq-prover/equations/raw/master/doc/equations.pdf
 -- Matthieu Sozeau

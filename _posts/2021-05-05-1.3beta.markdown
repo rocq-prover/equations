@@ -9,6 +9,6 @@ Release [1.3beta][release] of Equations is available, as source and through `opa
 for Coq 8.13. See the [release][release] notes and updated 
 [reference manual][refman] for details.
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.3-8.13beta
-[refman]: https://github.com/mattam82/Coq-Equations/raw/master/doc/equations.pdf
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.3-8.13beta
+[refman]: https://github.com/rocq-prover/equations/raw/master/doc/equations.pdf
 -- Matthieu Sozeau

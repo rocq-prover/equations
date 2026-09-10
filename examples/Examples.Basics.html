@@ -62,7 +62,7 @@ Just pattern-matching
 </div>
 
 <div class="doc">
-A proof using the functional elimination principle derived for <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#neg"><span class="id" title="definition">neg</span></a></span>. 
+A proof using the functional elimination principle derived for <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#neg"><span class="id" title="definition">neg</span></a></span>. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">neg_inv</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">b</span>, <span class="id" title="var">neg</span> (<span class="id" title="var">neg</span> <span class="id" title="var">b</span>) = <span class="id" title="var">b</span>.<br/>
@@ -155,7 +155,7 @@ Pattern-matching on the indexed equality type.
 By default we disallow the K axiom, but it can be set. 
 <div class="paragraph"> </div>
 
- In this case the following definition fails as <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#KDec.K"><span class="id" title="definition">K</span></a></span> is not derivable on type <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span>. 
+ In this case the following definition fails as <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#KDec.K"><span class="id" title="definition">K</span></a></span> is not derivable on type <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span>. 
 </div>
 <div class="code">
 &nbsp;&nbsp;<span class="id" title="var">Fail</span> <span class="id" title="keyword">Equations</span> <span class="id" title="var">K</span> {<span class="id" title="var">A</span>} (<span class="id" title="var">x</span> : <span class="id" title="var">A</span>) (<span class="id" title="var">P</span> : <span class="id" title="var">x</span> = <span class="id" title="var">x</span> → <span class="id" title="keyword">Type</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">P</span> <span class="id" title="var">eq_refl</span>) (<span class="id" title="var">H</span> : <span class="id" title="var">x</span> = <span class="id" title="var">x</span>) : <span class="id" title="var">P</span> <span class="id" title="var">H</span> :=<br/>
@@ -172,7 +172,7 @@ By default we disallow the K axiom, but it can be set.
 </div>
 
 <div class="doc">
-The definition is however using an axiom equivalent to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#KDec.K"><span class="id" title="definition">K</span></a></span>, so it cannot reduce
+The definition is however using an axiom equivalent to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#KDec.K"><span class="id" title="definition">K</span></a></span>, so it cannot reduce
       on closed or open terms. 
 </div>
 <div class="code">
@@ -183,7 +183,7 @@ The definition is however using an axiom equivalent to <span class="inlinecode">
 </div>
 
 <div class="doc">
-However, types enjoying a provable instance of the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#KDec.K"><span class="id" title="definition">K</span></a></span> principle are fine using the <span class="inlinecode"><span class="id" title="var">With</span></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Prop.Classes.html#UIP"><span class="id" title="class">UIP</span></a></span>
+However, types enjoying a provable instance of the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#KDec.K"><span class="id" title="definition">K</span></a></span> principle are fine using the <span class="inlinecode"><span class="id" title="var">With</span></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Prop.Classes.html#UIP"><span class="id" title="class">UIP</span></a></span>
       option. Note that the following definition does *not* reduce according to its single clause
       on open terms, it instead computes using the decidable equality proof on natural numbers. 
 </div>
@@ -240,7 +240,7 @@ By default, equations makes definitions opaque after definition,
 </div>
 
 <div class="doc">
-We define inclusion of a list in another one, to specify the behavior of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#filter"><span class="id" title="definition">filter</span></a></span> 
+We define inclusion of a list in another one, to specify the behavior of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#filter"><span class="id" title="definition">filter</span></a></span> 
 </div>
 <div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">incl</span> {<span class="id" title="var">A</span>} : <span class="id" title="var">relation</span> (<span class="id" title="var">list</span> <span class="id" title="var">A</span>) :=<br/>
@@ -277,7 +277,7 @@ Well-founded definitions:
 </div>
 
 <div class="doc">
-One can declare new well-founded relations using instances of the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Prop.Classes.html#WellFounded"><span class="id" title="class">WellFounded</span></a></span> typeclass. 
+One can declare new well-founded relations using instances of the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Prop.Classes.html#WellFounded"><span class="id" title="class">WellFounded</span></a></span> typeclass. 
 </div>
 <div class="code">
 #[<span class="id" title="var">local</span>] <span class="id" title="keyword">Instance</span> <span class="id" title="var">wf_nat</span> : <span class="id" title="var">WellFounded</span> <span class="id" title="var">lt</span> := <span class="id" title="var">lt_wf</span>.<br/>
@@ -287,7 +287,7 @@ One can declare new well-founded relations using instances of the <span class="i
 </div>
 
 <div class="doc">
-The <span class="inlinecode"><span class="id" title="tactic">by</span></span> <span class="inlinecode"><span class="id" title="keyword">wf</span></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.lt"><span class="id" title="variable">lt</span></a></span> annotation indicates the kind of well-founded recursion we want. 
+The <span class="inlinecode"><span class="id" title="tactic">by</span></span> <span class="inlinecode"><span class="id" title="keyword">wf</span></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.lt"><span class="id" title="variable">lt</span></a></span> annotation indicates the kind of well-founded recursion we want. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Equations</span> <span class="id" title="var">testn</span> (<span class="id" title="var">n</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span> <span class="id" title="tactic">by</span> <span class="id" title="keyword">wf</span> <span class="id" title="var">n</span> <span class="id" title="var">lt</span> :=<br/>
@@ -358,7 +358,7 @@ We can also support well-founded recursion on indexed datatypes.
 <div class="doc">
 We automatically derive the signature and subterm relation for
     vectors and prove it's well-foundedness. The signature provides
-    a <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Signature.html#signature_pack"><span class="id" title="definition">signature_pack</span></a></span> function to pack a vector with its index. The
+    a <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Signature.html#signature_pack"><span class="id" title="definition">signature_pack</span></a></span> function to pack a vector with its index. The
     well-founded relation is defined on the packed vector type. 
 </div>
 <div class="code">
@@ -370,7 +370,7 @@ We automatically derive the signature and subterm relation for
 </div>
 
 <div class="doc">
-The relation is actually called <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#t_subterm"><span class="id" title="definition">t_subterm</span></a></span> as <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> is just
+The relation is actually called <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#t_subterm"><span class="id" title="definition">t_subterm</span></a></span> as <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> is just
     a notation for <span class="inlinecode"><span class="id" title="var">Vector.t</span></span>. 
 </div>
 <div class="code">
@@ -384,9 +384,9 @@ The relation is actually called <span class="inlinecode"><a class="idref" href="
 
 <div class="doc">
 We can use the packed relation to do well-founded recursion on the vector.
-      Note that we do a recursive call on a substerm of type <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> which
-      must be shown smaller than a <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span> <span class="inlinecode">(<a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#Image.S"><span class="id" title="variable">S</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span>. They are actually compared
-      at the packed type <span class="inlinecode">{</span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a></span> <span class="inlinecode">&amp;</span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>}</span>. 
+      Note that we do a recursive call on a substerm of type <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> which
+      must be shown smaller than a <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span> <span class="inlinecode">(<a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#Image.S"><span class="id" title="variable">S</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span>. They are actually compared
+      at the packed type <span class="inlinecode">{</span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a></span> <span class="inlinecode">&amp;</span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#vector"><span class="id" title="abbreviation">vector</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.A"><span class="id" title="variable">A</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>}</span>. 
 </div>
 <div class="code">
 
@@ -403,7 +403,7 @@ We can use the packed relation to do well-founded recursion on the vector.
 
 <div class="doc">
 Playing with lists and functional induction, we define a tail-recursive version
-    of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#rev"><span class="id" title="definition">rev</span></a></span> and show its equivalence with the "naïve" <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#rev"><span class="id" title="definition">rev</span></a></span>. 
+    of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#rev"><span class="id" title="definition">rev</span></a></span> and show its equivalence with the "naïve" <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#rev"><span class="id" title="definition">rev</span></a></span>. 
 </div>
 <div class="code">
 
@@ -545,7 +545,7 @@ We split by well-founded recursion on the index <span class="inlinecode"><span c
 </div>
 
 <div class="doc">
-The <span class="inlinecode"><span class="id" title="tactic">split</span></span> and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#vapp"><span class="id" title="definition">vapp</span></a></span> functions are inverses. 
+The <span class="inlinecode"><span class="id" title="tactic">split</span></span> and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#vapp"><span class="id" title="definition">vapp</span></a></span> functions are inverses. 
 </div>
 <div class="code">
 
@@ -656,7 +656,7 @@ The image of a function.
 </div>
 
 <div class="doc">
-Here <span class="inlinecode">(<a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">s</span>)</span> is innaccessible. 
+Here <span class="inlinecode">(<a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">s</span>)</span> is innaccessible. 
 </div>
 <div class="code">
 
@@ -852,7 +852,7 @@ When recursive calls are made on results pattern-matching
 </div>
 
 <div class="doc">
-The <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#inspect"><span class="id" title="definition">inspect</span></a></span> definition is used to pack a value with a proof
+The <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#inspect"><span class="id" title="definition">inspect</span></a></span> definition is used to pack a value with a proof
   of an equality to itself. When pattern matching on the first component in 
   this existential type, we keep information about the origin of the pattern 
   available in the second component, the equality.  
@@ -868,11 +868,11 @@ The <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/C
 </div>
 
 <div class="doc">
-If one uses <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> instead of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#inspect"><span class="id" title="definition">inspect</span></a></span> <span class="inlinecode">(<a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span> in the following definition,
+If one uses <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> instead of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#inspect"><span class="id" title="definition">inspect</span></a></span> <span class="inlinecode">(<a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span>)</span> in the following definition,
    patterns should be patterns for the option type, but then there
    is an unprovable obligation that is generated as we don't keep information
-   about the call to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> being equal to <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#FilterDef.p"><span class="id" title="variable">p</span></a></span> to justify the recursive
-   call to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.Basics.html#f_sequence"><span class="id" title="definition">f_sequence</span></a></span>. 
+   about the call to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#well_founded_recursion_and_auxiliary_function.f"><span class="id" title="variable">f</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> being equal to <span class="inlinecode"><a class="idref" href="http://rocq-prover.org/doc/V9.2+alpha/stdlib//Corelib.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a></span> <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#FilterDef.p"><span class="id" title="variable">p</span></a></span> to justify the recursive
+   call to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.Basics.html#f_sequence"><span class="id" title="definition">f_sequence</span></a></span>. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Equations</span> <span class="id" title="var">f_sequence</span> (<span class="id" title="var">n</span> : <span class="id" title="var">A</span>) : <span class="id" title="var">list</span> <span class="id" title="var">A</span> <span class="id" title="tactic">by</span> <span class="id" title="keyword">wf</span> <span class="id" title="var">n</span> <span class="id" title="var">lt</span> :=<br/>

@@ -122,15 +122,15 @@ The current system is usable for developing non-toy programs and proofs
 a [reference manual][refman] with an introduction to the features of
 the plugin. [Feedback][issues] is very welcome!
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.2-beta-8.9
-[www]: http://mattam82.github.io/Coq-Equations
-[refman]: http://github.com/mattam82/Coq-Equations/raw/master/doc/equations.pdf
-[faq]: http://mattam82.github.io/Coq-Equations/FAQ
-[mutualwfrec]: http://mattam82.github.io/Coq-Equations/examples/mutualwfrec.html
-[definterp]: http://mattam82.github.io/Coq-Equations/examples/definterp.html
-[accumulator]: http://mattam82.github.io/Coq-Equations/examples/accumulator.html
-[polynomials]: http://mattam82.github.io/Coq-Equations/examples/polynomials.html
-[examples]: http://mattam82.github.io/Coq-Equations/examples
-[issues]: http://github.com/mattam82/Coq-Equations/issues
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.2-beta-8.9
+[www]: http://rocq-prover.github.io/equations
+[refman]: http://github.com/rocq-prover/equations/raw/master/doc/equations.pdf
+[faq]: http://rocq-prover.github.io/equations/FAQ
+[mutualwfrec]: http://rocq-prover.github.io/equations/examples/mutualwfrec.html
+[definterp]: http://rocq-prover.github.io/equations/examples/definterp.html
+[accumulator]: http://rocq-prover.github.io/equations/examples/accumulator.html
+[polynomials]: http://rocq-prover.github.io/equations/examples/polynomials.html
+[examples]: http://rocq-prover.github.io/equations/examples
+[issues]: http://github.com/rocq-prover/equations/issues
 
 -- Matthieu Sozeau

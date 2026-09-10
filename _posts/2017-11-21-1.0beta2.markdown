@@ -60,10 +60,10 @@ The current system is usable for developping non-toy programs and proofs
 seeking and welcoming [feedback][issues] from you on the usage of these
 tools!
 
-[release]: https://github.com/mattam82/Coq-Equations/releases/tag/v1.0-beta
-[www]: http://mattam82.github.io/Coq-Equations
-[faq]: http://mattam82.github.io/Coq-Equations/FAQ
-[examples]: http://mattam82.github.io/Coq-Equations/examples
-[issues]: http://github.com/mattam82/Coq-Equations/issues
+[release]: https://github.com/rocq-prover/equations/releases/tag/v1.0-beta
+[www]: http://rocq-prover.github.io/equations
+[faq]: http://rocq-prover.github.io/equations/FAQ
+[examples]: http://rocq-prover.github.io/equations/examples
+[issues]: http://github.com/rocq-prover/equations/issues
 
 -- Matthieu Sozeau and Cyprien Mangin

@@ -75,8 +75,8 @@ Nested recursive definition using a top-level <span class="inlinecode"><span cla
 
 <div class="paragraph"> </div>
 
-    The nested recursive fixpoint defined by <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_tlist"><span class="id" title="definition">subst_tlist</span></a></span> can be used multiple
-    time in <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_term"><span class="id" title="definition">subst_term</span></a></span>, and of course recursively call itself and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_term"><span class="id" title="definition">subst_term</span></a></span>.
+    The nested recursive fixpoint defined by <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_tlist"><span class="id" title="definition">subst_tlist</span></a></span> can be used multiple
+    time in <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_term"><span class="id" title="definition">subst_term</span></a></span>, and of course recursively call itself and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_term"><span class="id" title="definition">subst_term</span></a></span>.
     The regular structural guardedness check is run on this definition to check
     that it is terminating. Note that one can optionally add a <span class="inlinecode"><span class="id" title="keyword">struct</span></span> <span class="inlinecode"><span class="id" title="var">x</span></span> annotation
     to <span class="inlinecode"><span class="id" title="keyword">where</span></span> clauses to indicate which arguments decreases explicitely, otherwise
@@ -100,7 +100,7 @@ Nested recursive definition using a top-level <span class="inlinecode"><span cla
 </div>
 
 <div class="doc">
-Remark that our definition of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_tlist"><span class="id" title="definition">subst_tlist</span></a></span> is equivalent to a <span class="inlinecode"><span class="id" title="var">List.map</span></span>:
+Remark that our definition of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.nested_mut_rec.html#subst_tlist"><span class="id" title="definition">subst_tlist</span></a></span> is equivalent to a <span class="inlinecode"><span class="id" title="var">List.map</span></span>:
     but we need the "expanded" version to properly recognize recursive calls. 
 </div>
 <div class="code">

@@ -53,7 +53,7 @@
 
 <div class="paragraph"> </div>
 
-  We implement this using a <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> auxilliary function defined recursively
+  We implement this using a <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> auxilliary function defined recursively
   and pattern matching on the list.
  
 </div>
@@ -70,9 +70,9 @@
 
 <div class="doc">
 A typical issue with such accumulating functions is that one has to
-    write lemmas in two versions, once about the internal <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> function
+    write lemmas in two versions, once about the internal <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> function
     and then on its wrapper. Using the functional elimination principle
-    associated to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#rev_acc"><span class="id" title="definition">rev_acc</span></a></span>, we can show both properties simultaneously. 
+    associated to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#rev_acc"><span class="id" title="definition">rev_acc</span></a></span>, we can show both properties simultaneously. 
 </div>
 <div class="code">
 
@@ -82,12 +82,12 @@ A typical issue with such accumulating functions is that one has to
 </div>
 
 <div class="doc">
-We apply functional elimination on the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#rev_acc"><span class="id" title="definition">rev_acc</span></a></span> <span class="inlinecode"><span class="id" title="var">l</span></span> call.
+We apply functional elimination on the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#rev_acc"><span class="id" title="definition">rev_acc</span></a></span> <span class="inlinecode"><span class="id" title="var">l</span></span> call.
       The eliminator expects two predicates:
       one specifying the wrapper and another for the worker.
       For the wrapper, we give the expected final goal but for the worker
       we have to invent a kind of loop invariant: here that the result of
-      the whole <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> <span class="inlinecode"><span class="id" title="var">acc</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span> call is equal to <span class="inlinecode"><span class="id" title="definition">rev</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">++</span> <span class="inlinecode"><span class="id" title="var">acc</span></span>. 
+      the whole <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> <span class="inlinecode"><span class="id" title="var">acc</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span> call is equal to <span class="inlinecode"><span class="id" title="definition">rev</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">++</span> <span class="inlinecode"><span class="id" title="var">acc</span></span>. 
 </div>
 <div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">rev_acc_elim</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">A</span> <span class="id" title="var">l</span> <span class="id" title="var">revaccl</span> ⇒ <span class="id" title="var">revaccl</span> = <span class="id" title="var">rev</span> <span class="id" title="var">l</span>)<br/>
@@ -96,7 +96,7 @@ We apply functional elimination on the <span class="inlinecode"><a class="idref"
 
 <div class="doc">
 Functional elimination provides us with the worker property for the
-      initial <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> <span class="inlinecode">[]</span> <span class="inlinecode"><span class="id" title="var">l</span></span> call, i.e. that it is equal to <span class="inlinecode"><span class="id" title="definition">rev</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">++</span> <span class="inlinecode">[]</span>, hence
+      initial <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span> <span class="inlinecode">[]</span> <span class="inlinecode"><span class="id" title="var">l</span></span> call, i.e. that it is equal to <span class="inlinecode"><span class="id" title="definition">rev</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span> <span class="inlinecode">++</span> <span class="inlinecode">[]</span>, hence
       the proof: 
 </div>
 <div class="code">
@@ -123,7 +123,7 @@ For the worker proofs themselves, we use standard reasoning.
   Sometimes the natural expression of an algorithm in the worker/wrapper
   pattern requires well-founded recursion: here we take an example
   algorithm from Haskell whose termination is justified by a measure.
-  Note that the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#worker"><span class="id" title="definition">worker</span></a></span> subprogram's termination measure and
+  Note that the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#worker"><span class="id" title="definition">worker</span></a></span> subprogram's termination measure and
   implementation depends on the enclosing <span class="inlinecode"><span class="id" title="var">k</span></span> argument which is captured
   in the where clause.
 
@@ -164,7 +164,7 @@ For the worker proofs themselves, we use standard reasoning.
 
   Finally we show how the eliminator can be used to prove
   program equivalences involving a worker/wrapper definition.
-  Here <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#indexes"><span class="id" title="definition">indexes</span></a></span> <span class="inlinecode"><span class="id" title="var">l</span></span> computes the list <span class="inlinecode">0..|<span class="id" title="var">l</span>|-1</span> of valid indexes in the
+  Here <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#indexes"><span class="id" title="definition">indexes</span></a></span> <span class="inlinecode"><span class="id" title="var">l</span></span> computes the list <span class="inlinecode">0..|<span class="id" title="var">l</span>|-1</span> of valid indexes in the
   list <span class="inlinecode"><span class="id" title="var">l</span></span>.
 
 </div>
@@ -192,7 +192,7 @@ Clearly, all indexes in the resulting list should be smaller than <span class="i
 <div class="doc">
 We apply the eliminator, giving a predicate that specifies
       preservation of the property from the accumulator to the end
-      result for <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span>'s specification. The rest of the proof uses simple reasoning. 
+      result for <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#go"><span class="id" title="definition">go</span></a></span>'s specification. The rest of the proof uses simple reasoning. 
 </div>
 <div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">indexes_elim</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">l</span> <span class="id" title="var">indexesl</span> ⇒ <span class="id" title="var">Forall</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">x</span> ⇒ <span class="id" title="var">x</span> &lt; <span class="id" title="var">length</span> <span class="id" title="var">l</span>) <span class="id" title="var">indexesl</span>)<br/>
@@ -209,7 +209,7 @@ We apply the eliminator, giving a predicate that specifies
 </div>
 
 <div class="doc">
-Using well-founded recursion we can also define an <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#interval"><span class="id" title="definition">interval</span></a></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode"><span class="id" title="var">y</span></span>
+Using well-founded recursion we can also define an <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#interval"><span class="id" title="definition">interval</span></a></span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode"><span class="id" title="var">y</span></span>
     function producing the interval <span class="inlinecode"><span class="id" title="var">x</span>..<span class="id" title="var">y</span>-1</span> 
 </div>
 <div class="code">
@@ -225,7 +225,7 @@ Using well-founded recursion we can also define an <span class="inlinecode"><a c
 </div>
 
 <div class="doc">
-We prove a simple lemmas on <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#interval"><span class="id" title="definition">interval</span></a></span>: 
+We prove a simple lemmas on <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#interval"><span class="id" title="definition">interval</span></a></span>: 
 </div>
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">interval_large</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : ¬ <span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> → <span class="id" title="var">interval</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> = [].<br/>
@@ -235,7 +235,7 @@ We prove a simple lemmas on <span class="inlinecode"><a class="idref" href="http
 </div>
 
 <div class="doc">
-One can show that <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#indexes"><span class="id" title="definition">indexes</span></a></span> <span class="inlinecode"><span class="id" title="var">l</span></span> produces the interval <span class="inlinecode">0..|<span class="id" title="var">l</span>|-1</span> using <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.accumulator.html#indexes_elim"><span class="id" title="definition">indexes_elim</span></a></span>.
+One can show that <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#indexes"><span class="id" title="definition">indexes</span></a></span> <span class="inlinecode"><span class="id" title="var">l</span></span> produces the interval <span class="inlinecode">0..|<span class="id" title="var">l</span>|-1</span> using <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.accumulator.html#indexes_elim"><span class="id" title="definition">indexes_elim</span></a></span>.
     The recursion invariant for <span class="inlinecode"><span class="id" title="var">indexes_go</span></span> records that <span class="inlinecode"><span class="id" title="var">acc</span></span> corresponds to a partial
     interval <span class="inlinecode"><span class="id" title="var">n</span>..|<span class="id" title="var">l</span>|-1</span> during the computation, and is finally completed into <span class="inlinecode">0..|<span class="id" title="var">l</span>|-1</span>
     by the end of the computation. We use the previous lemmas as helpers.

@@ -43,7 +43,7 @@
 </div>
 
 <div class="doc">
-The graph of the <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> function. 
+The graph of the <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> function. 
 </div>
 <div class="code">
 
@@ -60,7 +60,7 @@ The graph of the <span class="inlinecode"><a class="idref" href="http://github.c
 </div>
 
 <div class="doc">
-It is easy to derive the spec of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> from it, by induction. 
+It is easy to derive the spec of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> from it, by induction. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">f91_spec</span> <span class="id" title="var">n</span> <span class="id" title="var">m</span> : <span class="id" title="var">f91_graph</span> <span class="id" title="var">n</span> <span class="id" title="var">m</span> → <span class="id" title="keyword">if</span> <span class="id" title="var">le_lt_dec</span> <span class="id" title="var">n</span> 100 <span class="id" title="keyword">then</span> <span class="id" title="var">m</span> = 91 <span class="id" title="keyword">else</span> <span class="id" title="var">m</span> = <span class="id" title="var">n</span> - 10.<br/>
@@ -78,7 +78,7 @@ It is easy to derive the spec of <span class="inlinecode"><a class="idref" href=
 <div class="doc">
 One can construct the graph using a (relatively) complex termination argument.
     Note that it is required to know that the result is in the graph to show
-    termination at the second, nested recursive call to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91_exists"><span class="id" title="definition">f91_exists</span></a></span>. 
+    termination at the second, nested recursive call to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91_exists"><span class="id" title="definition">f91_exists</span></a></span>. 
 </div>
 <div class="code">
 
@@ -98,7 +98,7 @@ One can construct the graph using a (relatively) complex termination argument.
 </div>
 
 <div class="doc">
-Combining these two things allow us to derive the spec of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span>. 
+Combining these two things allow us to derive the spec of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span>. 
 </div>
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">f91</span> <span class="id" title="var">n</span> : (<span class="id" title="var">f91_exists</span> <span class="id" title="var">n</span>).1 = <span class="id" title="keyword">if</span> <span class="id" title="var">le_lt_dec</span> <span class="id" title="var">n</span> 100 <span class="id" title="keyword">then</span> 91 <span class="id" title="keyword">else</span> <span class="id" title="var">n</span> - 10.<br/>
@@ -111,7 +111,7 @@ Combining these two things allow us to derive the spec of <span class="inlinecod
 </div>
 
 <div class="doc">
-This extracts to <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span>. 
+This extracts to <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span>. 
 </div>
 <div class="code">
 <span class="comment">(*&nbsp;Extraction&nbsp;f91_exists.&nbsp;*)</span><br/>
@@ -120,7 +120,7 @@ This extracts to <span class="inlinecode"><a class="idref" href="http://github.c
 </div>
 
 <div class="doc">
-An alternative is to use the domain of <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> instead,
+An alternative is to use the domain of <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> instead,
     which for nested recursive calls requires a quantification
     on the graph relation. 
 </div>
@@ -143,7 +143,7 @@ An alternative is to use the domain of <span class="inlinecode"><a class="idref"
 
 <div class="doc">
 These two structural inversion lemmas are essential: we rely on the fact
-    that they return subterms of their <span class="inlinecode"><span class="id" title="var">prf</span></span> argument below to define <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#WithSubset.f91_ongraph"><span class="id" title="definition">f91_ongraph</span></a></span>
+    that they return subterms of their <span class="inlinecode"><span class="id" title="var">prf</span></span> argument below to define <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#WithSubset.f91_ongraph"><span class="id" title="definition">f91_ongraph</span></a></span>
     by <i>structural</i> recursion. 
 </div>
 <div class="code">
@@ -165,7 +165,7 @@ These two structural inversion lemmas are essential: we rely on the fact
 </div>
 
 <div class="doc">
-In this case, <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#WithSubset.f91_ongraph"><span class="id" title="definition">f91_ongraph</span></a></span> is recursive on the domain proof, but only does
+In this case, <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#WithSubset.f91_ongraph"><span class="id" title="definition">f91_ongraph</span></a></span> is recursive on the domain proof, but only does
       inversion of it, not direct pattern-matching which would be forbidden as it
       lives in <span class="inlinecode"><span class="id" title="keyword">Prop</span></span>. 
 </div>
@@ -191,7 +191,7 @@ In this case, <span class="inlinecode"><a class="idref" href="http://github.com/
 </div>
 
 <div class="doc">
-The proof witness <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91_dom"><span class="id" title="inductive">f91_dom</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> disappears at extraction time.
+The proof witness <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91_dom"><span class="id" title="inductive">f91_dom</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> disappears at extraction time.
       But the polymorphic sigma type makes it leave a dummy unit value
       on the side.
    
@@ -240,8 +240,8 @@ Same thing with a subset type for cleaner extraction. We use <span class="inline
 </div>
 
 <div class="doc">
-All proof witnesses <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91_dom"><span class="id" title="inductive">f91_dom</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> and <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91_graph"><span class="id" title="inductive">f91_graph</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode"><span class="id" title="var">r</span></span> disappear at extraction time, giving
-      the "real" <span class="inlinecode"><a class="idref" href="http://github.com/mattam82/Coq-Equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> implementation.
+All proof witnesses <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91_dom"><span class="id" title="inductive">f91_dom</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> and <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91_graph"><span class="id" title="inductive">f91_graph</span></a></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode"><span class="id" title="var">r</span></span> disappear at extraction time, giving
+      the "real" <span class="inlinecode"><a class="idref" href="http://github.com/rocq-prover/equations/tree/main/Equations.Examples.bove_capretta.html#f91"><span class="id" title="lemma">f91</span></a></span> implementation.
    
 </div>
 <div class="code">

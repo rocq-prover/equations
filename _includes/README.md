@@ -1,6 +1,6 @@
 # **Equations** - a function definition plugin.
 
-[![Build Status](https://github.com/mattam82/Coq-Equations/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/mattam82/Coq-Equations/actions/workflows/build.yml)
+[![Build Status](https://github.com/rocq-prover/equations/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/rocq-prover/equations/actions/workflows/build.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3012649.svg)](https://zenodo.org/record/3012649#.XcEydZNKjOQ)
 [![Zulip Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://coq.zulipchat.com/#narrow/stream/237659-Equations-devs.20.26.20users)
 
@@ -10,7 +10,7 @@ Copyright 2015-2018 Cyprien Mangin `cyprien.mangin@m4x.org`
 Distributed under the terms of the GNU Lesser General Public License
 Version 2.1 or later
 (see
-[LICENSE](http://github.com/mattam82/Coq-Equations/raw/master/LICENSE)
+[LICENSE](http://github.com/rocq-prover/equations/raw/master/LICENSE)
 for details).
 
 Equations provides a notation for writing programs by dependent
@@ -43,13 +43,13 @@ definitions are axiom-free.
 
 ## Documentation
 
-- The [reference manual](http://github.com/mattam82/Coq-Equations/raw/main/doc/equations.pdf)
+- The [reference manual](http://github.com/rocq-prover/equations/raw/main/doc/equations.pdf)
   provides a summary of the commands and options, and a brief introduction.
   This introduction can also be followed interactively with Equations installed,
-  [equations_intro.v](http://github.com/mattam82/Coq-Equations/raw/main/doc/equations_intro.v)
-  or [interactively in your browser](http://mattam82.github.io/Coq-Equations/assets/jsexamples/equations_intro.html).
+  [equations_intro.v](http://github.com/rocq-prover/equations/raw/main/doc/equations_intro.v)
+  or [interactively in your browser](http://rocq-prover.github.io/equations/assets/jsexamples/equations_intro.html).
 
-- A gallery of [examples](http://mattam82.github.io/Coq-Equations/examples) provides more consequent
+- A gallery of [examples](http://rocq-prover.github.io/equations/examples) provides more consequent
   developments using Equations.
 
 ## Papers and presentations
@@ -87,15 +87,15 @@ definitions are axiom-free.
 ## Installation
 
 The latest version works with Coq 8.13 (branch
-[8.13](https://github.com/mattam82/Coq-Equations/tree/8.13)),
+[8.13](https://github.com/rocq-prover/equations/tree/8.13)),
 Coq 8.14 (branch
-[8.14](https://github.com/mattam82/Coq-Equations/tree/8.14)),
+[8.14](https://github.com/rocq-prover/equations/tree/8.14)),
 Coq 8.15 (branch
-[8.15](https://github.com/mattam82/Coq-Equations/tree/8.15)),
+[8.15](https://github.com/rocq-prover/equations/tree/8.15)),
 and the current Coq master branch (branch
-[master](https://github.com/mattam82/Coq-Equations/tree/master)).
+[master](https://github.com/rocq-prover/equations/tree/master)).
 
-See [releases](https://github.com/mattam82/Coq-Equations/releases) for
+See [releases](https://github.com/rocq-prover/equations/releases) for
 sources and official releases.
 
 ### Install with OPAM
