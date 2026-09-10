@@ -44,10 +44,9 @@ type derive_instance = (string * Names.GlobRef.t)
 
 type derive_instance_map = StringSet.t Environ.QGlobRef.Map.t
 
-let derived_instances : derive_instance_map Summary.Ref.t = Summary.ref Environ.QGlobRef.Map.empty ~name:"derived-instances"
+let derived_instances : derive_instance_map ref = Summary.ref Environ.QGlobRef.Map.empty ~name:"derived-instances"
 
 let cache_instance (derive, gr) =
-  let open Summary.Ref in
   let grderives = 
     match Environ.QGlobRef.Map.find_opt (Global.env ()) gr !derived_instances with
     | Some s -> s
@@ -75,7 +74,6 @@ let register_instance decl =
   Lib.add_leaf (derive_instance_input decl)
 
 let check_derive s gr =
-  let open Summary.Ref in
   try
     let grds = Environ.QGlobRef.Map.find (Global.env ()) gr !derived_instances in
     StringSet.mem s grds
