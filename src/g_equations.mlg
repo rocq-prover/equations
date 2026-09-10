@@ -509,6 +509,10 @@ TACTIC EXTEND refine_ho
 | [ "refine_ho" open_constr(c) ] -> { Extra_tactics.refine_ho c }
 END
 
+TACTIC EXTEND intro_binder_name
+| [ "intro_binder_name" ] -> { Extra_tactics.intro_binder_name }
+END
+
 TACTIC EXTEND eqns_specialize_eqs
 | [ "eqns_specialize_eqs" ident(i) ] -> {
     Depelim.specialize_eqs i

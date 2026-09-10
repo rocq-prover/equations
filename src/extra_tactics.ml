@@ -23,6 +23,34 @@ let autounfold_ref gr =
   in Eauto.autounfold ["core";db] Locusops.onConcl
 
 
+(** [intro_binder_name] introduces the next hypothesis reusing the binder
+    name verbatim (only appending subscripts in case of clash), instead of
+    going through fresh name generation which would mangle it under
+    [Mangle Names]. It is meant to reintroduce hypotheses whose binder names
+    are user-given, e.g. after [revert]. Falls back to [intro] on anonymous
+    binders. *)
+let intro_binder_name =
+  Proofview.Goal.enter begin fun gl ->
+    let sigma = Proofview.Goal.sigma gl in
+    let concl = Proofview.Goal.concl gl in
+    let name =
+      match kind sigma concl with
+      | Prod (na, _, _) | LetIn (na, _, _, _) -> na.Context.binder_name
+      | _ -> Anonymous
+    in
+    match name with
+    | Anonymous -> Tactics.intro
+    | Name id ->
+      let avoid = List.fold_left (fun avoid decl ->
+          Id.Set.add (Context.Named.Declaration.get_id decl) avoid)
+          Id.Set.empty (Proofview.Goal.hyps gl)
+      in
+      let rec freshen id =
+        if Id.Set.mem id avoid then freshen (Nameops.increment_subscript id) else id
+      in
+      Tactics.intro_mustbe_force (freshen id)
+  end
+
 open Proofview.Goal
 open Proofview.Notations
 
