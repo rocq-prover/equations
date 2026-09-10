@@ -249,4 +249,4 @@ on:
     - reopened
   push:
     branches:
-    - main
+    - '9.3'

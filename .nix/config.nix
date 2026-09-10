@@ -61,14 +61,10 @@ with builtins; with (import <nixpkgs> {}).lib;
   bundles.default = {
     ## You can override Rocq and other Rocq rocqPackages
     ## through the following attribute
-    rocqPackages.rocq-core.override.version = "master";
-    rocqPackages.stdlib.override.version = "master";
-    coqPackages.coq.override.version = "master";
-    coqPackages.stdlib.override.version = "master";
-    ## You can override Coq and other Coq coqPackages
-    ## through the following attribute
-    # coqPackages.coq.override.version = "8.11";
-    dune.override.version = "3.21.1";
+    rocqPackages.rocq-core.override.version = "9.3";
+    rocqPackages.stdlib.override.version = "9.2.0";
+    coqPackages.coq.override.version = "9.3";
+    coqPackages.stdlib.override.version = "9.2.0";
 
     ## In some cases, light overrides are not available/enough
     ## in which case you can use either
@@ -106,7 +102,7 @@ with builtins; with (import <nixpkgs> {}).lib;
     ## reverse dependency of a job flagged as "main-job" (see above).
 
     ## Run on push on following branches (default [ "master" ])
-    push-branches = [ "main" ];
+    push-branches = [ "9.3" ];
   };
 
   ## Cachix caches to use in CI
