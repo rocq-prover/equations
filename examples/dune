@@ -5,6 +5,6 @@
  (synopsis "Equations Plugin Examples")
  (plugins rocq-runtime.plugins.extraction rocq-equations.plugin)
  (modules :standard \ IdDec NoCycle)
- (theories Stdlib Equations Equations.Prop Equations.Type))
+ (theories micromega_plugin Stdlib Equations Equations.Prop Equations.Type))  ; we need micromega_plugin because dune is unfortunately unable to handle transitive dependencies
 
 (include_subdirs no)
