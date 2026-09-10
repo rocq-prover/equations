@@ -319,10 +319,20 @@ let add_wfrec_implicits rec_type c =
     let rec aux c =
       let maprec a = Glob_ops.map_glob_constr_left_to_right aux a in
       let mapargs ts = List.map aux ts in
+      let err_partial_app fid loc nargs =
+        let open Pp in
+        user_err_loc (loc,
+             str "Partially applied well-founded recursive functions are not supported " ++
+             str "(here, " ++ Names.Id.print fid ++ str " should take " ++ int nargs ++ str " aguments)." ++
+             cut () ++
+             str "Beware: abstracting over arguments occuring in the wf expression " ++
+             str "to make the application total might cause losing information " ++
+             str "that is needed to prove that the recursive call is decreasing.")
+      in
       DAst.with_loc_val (fun ?loc g ->
           match g with
           | GApp (fn, args) ->
-            DAst.with_loc_val (fun ?loc gfn ->
+            DAst.with_loc_val (fun ?loc:_ gfn ->
                 match gfn with
                 | GVar fid -> 
                   (match is_wf_ref fid rec_type with
@@ -332,12 +342,17 @@ let add_wfrec_implicits rec_type c =
                                             qm_name = Anonymous;
                                             qm_record_field = None }
                     in
+                    let () = if List.length args < nargs then err_partial_app fid loc nargs in
                     let newarg = GHole (GQuestionMark kind) in
                     let newarg = DAst.make ?loc newarg in
                     let before, after = List.chop nargs (mapargs args) in
                     let args' = List.append before (newarg :: after) in
                     DAst.make ?loc (GApp (fn, args')))
                 | _ -> maprec c) fn
+          | GVar fid ->
+             (match is_wf_ref fid rec_type with
+             | exception Not_found -> maprec c
+             | nargs -> err_partial_app fid loc nargs)
           | _ -> maprec c) c
     in aux c
   else c
