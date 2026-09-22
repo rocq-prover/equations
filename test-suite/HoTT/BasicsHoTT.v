@@ -448,7 +448,7 @@ Section Image.
 
 End Image.
 
-Section Univ.
+Section Universe.
 
   Inductive univ : Set :=
   | ubool | unat | uarrow (from:univ) (to:univ).
@@ -472,7 +472,7 @@ Section Univ.
   Transparent foo.
   (* Eval lazy beta delta [ foo foo_obligation_1 foo_obligation_2 ] iota zeta in foo. *)
 
-End Univ.
+End Universe.
 
 (* Eval compute in (foo ubool false). *)
 (* Eval compute in (foo (uarrow ubool ubool) negb). *)

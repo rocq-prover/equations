@@ -399,7 +399,7 @@ End Image.
 
 (** Working with a universe of types with an interpretation function. *)
 
-Section Univ.
+Section Universe.
 
   Inductive univ : Set :=
   | ubool | unat | uarrow (from:univ) (to:univ).
@@ -421,7 +421,7 @@ Section Univ.
   Transparent foo.
   (* Eval lazy beta delta [ foo foo_obligation_1 foo_obligation_2 ] iota zeta in foo. *)
 
-End Univ.
+End Universe.
 
 Equations vlast {A} {n} (v : vector A (S n)) : A by struct v :=
 vlast (@cons a O _) := a ;
