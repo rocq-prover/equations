@@ -334,6 +334,7 @@ let abstract_rec_calls sigma user_obls ?(do_subst=true) is_rec len protos c =
         in hyps, c'
   in clean_rec_calls sigma (aux 0 [] CMap.empty (EConstr.Unsafe.to_constr c))
 
+module CVars = Vars
 open EConstr
 
 let subst_app sigma f fn c =
@@ -1687,11 +1688,21 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
         inds
     in
     let univs, ubinders = Evd.univ_entry ~poly sigma in
-    let uctx = match univs with
+    let usubst, uctx = match univs with
     | UState.Monomorphic_entry ctx ->
       let () = Global.push_context_set ctx in
-      Entries.Monomorphic_ind_entry
-    | UState.Polymorphic_entry uctx -> Entries.Polymorphic_ind_entry uctx
+      UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
+    | UState.Polymorphic_entry uctx ->
+      let uinst, auctx = UVars.abstract_universes uctx in
+      UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry auctx
+    in
+    let nf_univs c = CVars.subst_univs_level_constr usubst c in
+    let inds =
+      List.map (fun entry ->
+          Entries.{ entry with
+                    mind_entry_arity = nf_univs entry.mind_entry_arity;
+                    mind_entry_lc = List.map nf_univs entry.mind_entry_lc })
+        inds
     in
     let inductive =
       Entries.{ mind_entry_record = None;

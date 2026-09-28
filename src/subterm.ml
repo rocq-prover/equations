@@ -151,18 +151,26 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
         mind_entry_lc = constructors }
   in
   let univs, ubinders = Evd.univ_entry ~poly sigma in
-  let uctx = match univs with
+  let usubst, uctx = match univs with
   | UState.Monomorphic_entry ctx ->
     let () = Global.push_context_set ctx in
-    Entries.Monomorphic_ind_entry
-  | UState.Polymorphic_entry uctx -> Entries.Polymorphic_ind_entry uctx
+    UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
+  | UState.Polymorphic_entry uctx ->
+    let uinst, auctx = UVars.abstract_universes uctx in
+    UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry auctx
   in
+  let nf_univs c = CVars.subst_univs_level_constr usubst c in
   let declare_ind ~pm =
-    let inds = [declare_one_ind 0 indu branches] in
+    let inds = List.map (fun ind ->
+      { ind with mind_entry_arity = nf_univs ind.mind_entry_arity;
+                 mind_entry_lc = List.map nf_univs ind.mind_entry_lc })
+      [declare_one_ind 0 indu branches]
+    in
     let inductive =
       { mind_entry_record = None;
         mind_entry_finite = Declarations.Finite;
-        mind_entry_params = List.map (fun d -> to_rel_decl sigma (Context.Rel.Declaration.map_constr refresh_universes d)) parambinders;
+        mind_entry_params = CVars.subst_univs_level_context usubst @@
+          List.map (fun d -> to_rel_decl sigma (Context.Rel.Declaration.map_constr refresh_universes d)) parambinders;
         mind_entry_inds = inds;
         mind_entry_private = None;
         mind_entry_universes = uctx;
