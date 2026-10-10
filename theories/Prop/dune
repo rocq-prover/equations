@@ -3,5 +3,5 @@
  (name Equations.Prop)
  (package rocq-equations)
  (synopsis "Equations Plugin")
- (theories Stdlib Equations)
+ (theories micromega_plugin Stdlib Equations)  ; we need micromega_plugin because dune is unfortunately unable to handle transitive dependencies
  (modules :standard))
