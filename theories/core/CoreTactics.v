@@ -20,10 +20,13 @@ Local Open Scope equations_scope.
 
 Definition block := the_equations_tag.
 
+(** We use [intro_binder_name] rather than [intro] so that the names of the
+    reverted hypotheses are reused verbatim, in particular under
+    [Mangle Names] which would otherwise mangle them. *)
 Ltac intros_until_block :=
   match goal with
     |- let _ := block in _ => intros _
-  | |- _ => try (intro; intros_until_block)
+  | |- _ => try (intro_binder_name; intros_until_block)
   end.
 
 Ltac block_goal :=

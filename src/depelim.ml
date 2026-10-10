@@ -372,6 +372,77 @@ let specialize_eqs ?with_block id =
   end
   end
 
+(* When the covering term is refined, the subgoals are evars living in the
+   rel contexts computed by covering. Turning these rel contexts into the
+   named contexts of the subgoals ([Evarutil.push_rel_context_to_named_context])
+   generates fresh names for all the binders, which under [Mangle Names]
+   mangles every hypothesis name, including the user-given [as]-pattern names
+   and the names of pre-existing hypotheses. The covering contexts however
+   carry the intended names: user-given names verbatim, generated names
+   already freshened (and mangled) by [Covering.rename_domain]. We collect,
+   for each subgoal evar, its covering context and instance, and rename the
+   subgoal hypotheses back to the corresponding binder names after refining. *)
+let subgoals_of_splitting sigma split =
+  let rec aux acc split =
+    match split with
+    | Splitting.Compute (lhs, _, _, Splitting.RProgram c) ->
+      (match kind sigma c with
+       | Evar (ev, _ as evi) ->
+         if !Equations_common.debug then
+           Feedback.msg_debug Pp.(str "subgoal evar " ++ Evar.print ev ++
+             str " ctx: " ++ Context_map.pr_context (Global.env ()) sigma lhs.Context_map.src_ctx ++
+             str " inst: " ++ prlist_with_sep spc (Printer.pr_econstr_env (Global.env ()) sigma)
+               (Evd.expand_existential sigma evi));
+         (ev, lhs.Context_map.src_ctx, Evd.expand_existential sigma evi) :: acc
+       | _ -> acc)
+    | Splitting.Compute (_, _, _, Splitting.REmpty _) -> acc
+    | Splitting.Split (_, _, _, brs) ->
+      Array.fold_left (fun acc s ->
+        match s with Some s -> aux acc s | None -> acc) acc brs
+    | Splitting.Mapping (_, s) -> aux acc s
+    | Splitting.Refined (_, _, s) -> aux acc s
+  in aux [] split
+
+let rename_hyps_to_subgoal_binders rsubgoals =
+  Proofview.Goal.enter begin fun gl ->
+    let sigma = Proofview.Goal.sigma gl in
+    let ev = Proofview.Goal.goal gl in
+    let subgoal = List.find_opt (fun (ev', _, _) ->
+        match Evarutil.advance sigma ev' with
+        | Some ev' -> Evar.equal ev' ev
+        | None -> false) !rsubgoals
+    in
+    match subgoal with
+    | None -> Proofview.tclUNIT ()
+    | Some (_, ctx, inst) ->
+      let hyps = Proofview.Goal.hyps gl in
+      if not (Int.equal (List.length hyps) (List.length inst)) then
+        Proofview.tclUNIT ()
+      else
+        let len = List.length ctx in
+        let hyp_ids = List.fold_left (fun ids decl ->
+            Id.Set.add (Context.Named.Declaration.get_id decl) ids)
+            Id.Set.empty hyps
+        in
+        (* The named context of the subgoal and the evar instance are aligned:
+           an instance argument [Rel i] means the hypothesis stands for the
+           [i]-th declaration of the covering context. Rename it back to that
+           binder name, unless the name is already used in the goal. *)
+        let renames, _taken = List.fold_left2 (fun (renames, taken) decl arg ->
+            let cur = Context.Named.Declaration.get_id decl in
+            match kind sigma arg with
+            | Rel i when i <= len ->
+              (match Context.Rel.Declaration.get_name (List.nth ctx (pred i)) with
+               | Name id when not (Id.equal id cur) && not (Id.Set.mem id taken) ->
+                 ((cur, id) :: renames, Id.Set.add id taken)
+               | _ -> (renames, taken))
+            | _ -> (renames, taken))
+            ([], hyp_ids) hyps inst
+        in
+        if List.is_empty renames then Proofview.tclUNIT ()
+        else rename_hyp renames
+  end
+
 (* Dependent elimination using Equations. *)
 let dependent_elim_tac ?patterns id : unit Proofview.tactic =
   enter_goal begin fun env sigma concl ->
@@ -418,7 +489,7 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
             Tacticals.tclZEROMSG (str "Could not eliminate variable " ++ Id.print id)
         | Some (Covering.Splitted (_, newctx, brs)) ->
             let brs = Option.List.flatten (Array.to_list brs) in
-            let clauses_lhs = List.map Context_map.context_map_to_lhs brs in
+            let clauses_lhs = List.map (Context_map.context_map_to_lhs ~keep_names:true) brs in
             let clauses = List.map (fun lhs -> Syntax.Pre_clause (default_loc, lhs, Some rhs)) clauses_lhs in
               Proofview.tclUNIT clauses
         end
@@ -430,7 +501,11 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
               List.rev_map (fun decl ->
                 let decl_id = Context.Named.Declaration.get_id decl in
                 if Names.Id.equal decl_id id then DAst.make ?loc pat
-                else DAst.make Syntax.(PUVar (decl_id, Generated))) loc_hyps
+                (* [Implicit] rather than [Generated]: the names of the
+                   surrounding hypotheses are user-visible and should be
+                   preserved (in particular under [Mangle Names]), while
+                   still allowing aliasing with the given patterns. *)
+                else DAst.make Syntax.(PUVar (decl_id, Implicit))) loc_hyps
             in
             Syntax.Pre_clause (loc, lhs, Some rhs))
         in Proofview.tclUNIT (List.map make_clause patterns)
@@ -465,6 +540,7 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
     let prob = Context_map.id_subst ctx in
     let args = Context.Rel.instance_list mkRel 0 ctx in
 
+    let subgoals = ref [] in
     Refine.refine ~typecheck:true begin fun evars ->
       let evd = ref evars in
       (* Produce a splitting tree. *)
@@ -479,8 +555,9 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
       let c = Vars.substl (List.rev rev_subst) c in
       if !Equations_common.debug then
         Feedback.msg_debug (str "refining with" ++ Printer.pr_econstr_env env !evd c);
-        (!evd, c)
-    end
+      subgoals := subgoals_of_splitting !evd split;
+      (!evd, c)
+    end <*> rename_hyps_to_subgoal_binders subgoals
   end
 
 let dependent_elim_tac_expr ?patterns id : unit Proofview.tactic =
