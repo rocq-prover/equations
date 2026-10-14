@@ -4,6 +4,6 @@
  (package rocq-equations-tests)
  (synopsis "Equations Plugin Tests")
  (plugins rocq-runtime.plugins.extraction)
- (theories Stdlib Equations Equations.Prop Equations.Type))
+ (theories micromega_plugin Stdlib Equations Equations.Prop Equations.Type))  ; we need micromega_plugin because dune is unfortunately unable to handle transitive dependencies
 
 (include_subdirs no)
