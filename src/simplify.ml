@@ -830,6 +830,14 @@ SimpFun.make ~name:"solution" begin fun (env : Environ.env) (evd : Evd.evar_map 
   | true, false -> Builder.solution_left_dep
   | true, true -> Builder.solution_left end uinst
   in
+  let tsolution =
+    (* Expose the dependent left-elimination helper before supplying the
+       continuation. Otherwise its symmetry transports can hide the flow of
+       structural subterms from the guard checker. Normalize only the closed
+       helper, not the continuation or the user's terms. *)
+    if var_left && not nondep then Reductionops.nf_all env !evd tsolution
+    else tsolution
+  in
   let tB', body =
     let body = Context_map.mapping_constr !evd subst ty in
     (* Right now, [body] has an equality at the head that we want
