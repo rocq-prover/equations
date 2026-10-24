@@ -329,6 +329,12 @@ Its syntax is:
 It takes a list of patterns (see figure \ref{fig:usergram}) that should cover the type of \textit{ident}
 and generates the corresponding subgoals.
 
+Without the \texttt{as} clause, the patterns are inferred by splitting
+\textit{ident}. The \texttt{dependent-elimination-patterns} warning, which
+is disabled by default, reports the inferred patterns along with a
+quick-fix rewriting the call to the equivalent
+\tac{dependent elimination} \textit{ident} \texttt{as} [ up | .. | up ].
+
 
 \section{\texttt{simp}}
 

@@ -488,7 +488,8 @@ ARGUMENT EXTEND elim_patterns
 END
 
 TACTIC EXTEND dependent_elimination
-| [ "dependent" "elimination" ident(id) ] -> { Depelim.dependent_elim_tac (None, id) }
+| [ "dependent" "elimination" ident(id) ] ->
+   { Depelim.dependent_elim_tac ?loc:(Tacinterp.extract_loc ist) (None, id) }
 | [ "dependent" "elimination" ident(id) "as" elim_patterns(l) ] ->
    { Depelim.dependent_elim_tac ~patterns:l (None, id) (* FIXME *) }
 END

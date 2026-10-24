@@ -18,6 +18,7 @@ nestedobls.v
 rose.v
 scope.v
 depelim.v
+depelim_quickfix.v
 issues/issue7.v
 issues/issue8.v
 issues/issue24.v

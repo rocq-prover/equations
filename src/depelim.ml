@@ -372,8 +372,63 @@ let specialize_eqs ?with_block id =
   end
   end
 
+(** Printing of the patterns inferred by [dependent elimination id], in the syntax
+    of [dependent elimination id as [p1 | ... | pn]]. This is used as a quick-fix
+    replacement text, so it is printed on a single line. *)
+
+let pr_elim_pattern env sigma pat =
+  let rec aux ~arg pat =
+    match DAst.get pat with
+    | Syntax.PUVar (_, Syntax.Generated) -> str "_"
+    | Syntax.PUVar (id, _) -> Id.print id
+    | Syntax.PUEmpty -> str "!"
+    | Syntax.PUInac c -> str "?(" ++ Printer.pr_glob_constr_env env sigma c ++ str ")"
+    | Syntax.PUCstr (c, _, []) -> Printer.pr_global (GlobRef.ConstructRef c)
+    | Syntax.PUCstr (c, nparams, args) ->
+      (* All the arguments are given, so use [@] if some of them are implicit *)
+      let impls = Impargs.select_stronger_impargs (Impargs.implicits_of_global (GlobRef.ConstructRef c)) in
+      let explicit = List.exists Impargs.is_status_implicit (List.skipn_at_best nparams impls) in
+      let pp = (if explicit then str "@" else mt ()) ++ Printer.pr_global (GlobRef.ConstructRef c) ++
+        str " " ++ prlist_with_sep (fun () -> str " ") (aux ~arg:true) args in
+      if arg then str "(" ++ pp ++ str ")" else pp
+  in aux ~arg:false pat
+
+let pr_dependent_elimination_as env sigma (id, pats) =
+  h (str "dependent elimination " ++ Id.print id ++ str " as [" ++
+    prlist_with_sep (fun () -> str " | ") (pr_elim_pattern env sigma) pats ++ str "]")
+
+let warn_dependent_elimination_patterns =
+  CWarnings.create ~name:"dependent-elimination-patterns" ~category:equations_category
+    ~default:CWarnings.Disabled
+    ~quickfix:(fun ~loc pp -> [Quickfix.make ~loc pp])
+    (fun pp -> str "Patterns inferred by dependent elimination:" ++ spc () ++ pp ++ str ".")
+
+(** In a branch [map] of the splitting of the [rel]-th variable, a variable of the
+    constructor pattern can be forced to be equal to another variable of the context,
+    e.g. [n0] in [vcons a n0 v] when splitting [v : vec A (S n)]. Give it the name of
+    that variable rather than a fresh one. *)
+let rename_forced_variables sigma rel (map : Context_map.context_map) =
+  let open Context.Rel.Declaration in
+  let vars = Context_map.pat_vars (List.nth map.Context_map.map_inst (pred rel)) in
+  let used = Id.Set.of_list (List.map_filter (fun decl ->
+    match get_name decl with Name id -> Some id | Anonymous -> None) map.Context_map.src_ctx) in
+  let renaming, _ = List.fold_left2 (fun (renaming, used as acc) pat decl ->
+    match pat, get_name decl with
+    | Context_map.PInac c, Name id when isRel sigma c ->
+      let i = destRel sigma c in
+      if Int.Set.mem i vars && not (Int.Map.mem i renaming) && not (Id.Set.mem id used) then
+        (Int.Map.add i id renaming, Id.Set.add id used)
+      else acc
+    | _ -> acc) (Int.Map.empty, used) map.Context_map.map_inst map.Context_map.tgt_ctx
+  in
+  let src_ctx = List.mapi (fun i decl ->
+    match Int.Map.find_opt (succ i) renaming with
+    | Some id -> set_name (Name id) decl
+    | None -> decl) map.Context_map.src_ctx
+  in { map with Context_map.src_ctx }
+
 (* Dependent elimination using Equations. *)
-let dependent_elim_tac ?patterns id : unit Proofview.tactic =
+let dependent_elim_tac ?loc ?patterns id : unit Proofview.tactic =
   enter_goal begin fun env sigma concl ->
     let sort = Retyping.get_sort_of env sigma concl in
     let hyps = named_context env in
@@ -417,10 +472,17 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
         | None | Some (Covering.CannotSplit _) ->
             Tacticals.tclZEROMSG (str "Could not eliminate variable " ++ Id.print id)
         | Some (Covering.Splitted (_, newctx, brs)) ->
-            let brs = Option.List.flatten (Array.to_list brs) in
+            let brs = List.map (rename_forced_variables sigma rel) (Option.List.flatten (Array.to_list brs)) in
             let clauses_lhs = List.map Context_map.context_map_to_lhs brs in
             let clauses = List.map (fun lhs -> Syntax.Pre_clause (default_loc, lhs, Some rhs)) clauses_lhs in
-              Proofview.tclUNIT clauses
+            (* The pattern for [id] in each clause, to suggest an explicit [as] clause. *)
+            let suggestion =
+              let n = List.length ctx in
+              if List.for_all (fun lhs -> Int.equal (List.length lhs) n) clauses_lhs then
+                Some (List.map (fun lhs -> List.nth lhs (n - rel)) clauses_lhs)
+              else None
+            in
+              Proofview.tclUNIT (clauses, suggestion)
         end
     | Some patterns ->
         (* For each pattern, produce a clause. *)
@@ -433,8 +495,8 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
                 else DAst.make Syntax.(PUVar (decl_id, Generated))) loc_hyps
             in
             Syntax.Pre_clause (loc, lhs, Some rhs))
-        in Proofview.tclUNIT (List.map make_clause patterns)
-    end >>= fun clauses ->
+        in Proofview.tclUNIT (List.map make_clause patterns, None)
+    end >>= fun (clauses, suggestion) ->
     if !debug then
     Feedback.msg_info (str "Generated clauses: " ++ fnl() ++ Syntax.pr_preclauses env sigma clauses);
 
@@ -465,7 +527,13 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
     let prob = Context_map.id_subst ctx in
     let args = Context.Rel.instance_list mkRel 0 ctx in
 
-    Refine.refine ~typecheck:true begin fun evars ->
+    let warn_suggestion = match loc, suggestion with
+      | Some loc, Some pats ->
+        Proofview.tclLIFT (Proofview.NonLogical.make (fun () ->
+          warn_dependent_elimination_patterns ~loc (pr_dependent_elimination_as env sigma (id, pats))))
+      | _ -> Proofview.tclUNIT ()
+    in
+    Proofview.tclTHEN (Refine.refine ~typecheck:true begin fun evars ->
       let evd = ref evars in
       (* Produce a splitting tree. *)
       let split : Splitting.splitting =
@@ -480,7 +548,7 @@ let dependent_elim_tac ?patterns id : unit Proofview.tactic =
       if !Equations_common.debug then
         Feedback.msg_debug (str "refining with" ++ Printer.pr_econstr_env env !evd c);
         (!evd, c)
-    end
+    end) warn_suggestion
   end
 
 let dependent_elim_tac_expr ?patterns id : unit Proofview.tactic =
