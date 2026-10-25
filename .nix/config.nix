@@ -70,6 +70,10 @@ with builtins; with (import <nixpkgs> {}).lib;
     # coqPackages.coq.override.version = "8.11";
     dune.override.version = "3.21.1";
 
+    ## Reverse dependencies, built against the current Equations
+    coqPackages.ExtLib.override.version = "master";
+    coqPackages.metarocq.override.version = "main";
+
     ## In some cases, light overrides are not available/enough
     ## in which case you can use either
     # rocqPackages.<rocq-pkg>.overrideAttrs = o: <overrides>;
