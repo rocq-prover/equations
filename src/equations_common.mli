@@ -14,6 +14,9 @@ open Ltac_plugin
 type 'a peuniverses = 'a * EConstr.EInstance.t
 
 (* Options *)
+(** Read the current Rocq option, including changes made since plugin loading. *)
+val mangle_names_enabled : unit -> bool
+
 val simplify_withUIP : bool ref
 val equations_with_funext : bool ref
 val equations_transparent : bool ref

@@ -52,8 +52,11 @@ val inaccs_of_constrs : constr list -> pat list
 val pats_of_constrs : Environ.env -> Evd.evar_map -> constr list -> pat list
 val pat_of_constr : Environ.env -> Evd.evar_map -> constr -> pat
 
-(** Translating back to user patterns. *)
-val context_map_to_lhs : ?avoid:Id.Set.t -> ?loc:Loc.t -> context_map -> Syntax.lhs
+(** Translating back to user patterns. When [keep_names] is set, variable
+    patterns reuse the context binder names verbatim (with [Implicit]
+    provenance) instead of going through name generation, so that names of
+    pre-existing hypotheses survive [Mangle Names]. *)
+val context_map_to_lhs : ?avoid:Id.Set.t -> ?keep_names:bool -> ?loc:Loc.t -> context_map -> Syntax.lhs
 
 (** Pretty-printing *)
 val pr_constr_pat : env -> Evd.evar_map -> constr -> Pp.t

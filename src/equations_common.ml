@@ -33,6 +33,14 @@ let to_peuniverses (x, u) = (x, EConstr.EInstance.make u)
 let from_peuniverses sigma (x, u) = (x, EConstr.EInstance.kind sigma u)
 
 (* Options. *)
+let mangle_names_enabled () =
+  match Goptions.get_option_value ["Mangle"; "Names"] with
+  | Some get ->
+    (match get () with
+     | Goptions.BoolValue enabled -> enabled
+     | _ -> CErrors.anomaly (str "Mangle Names is not a boolean option."))
+  | None -> CErrors.anomaly (str "Mangle Names option is not registered.")
+
 let simplify_withUIP = ref false
 let equations_with_funext = ref true
 let equations_transparent = ref false
