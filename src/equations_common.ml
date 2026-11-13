@@ -305,7 +305,9 @@ let declare_constant ?check id body ty ~poly ~kind evd =
   if PolyFlags.univ_poly poly then
     let cstr = EConstr.(mkConstU (cst, EInstance.make (UVars.UContext.instance (Evd.to_universe_context evm)))) in
     cst, (evm0, cstr)
-  else cst, (evm0, EConstr.UnsafeMonomorphic.mkConst cst)
+  else
+    let evm0 = Evd.set_ustate evm0 (UState.demote_global_univs (Evd.universe_context_set evm) (Evd.ustate evm0)) in
+    cst, (evm0, EConstr.UnsafeMonomorphic.mkConst cst)
 
 let eval_mfix = function
 | Syntax.MutFix (progs, indexes, decl) ->
