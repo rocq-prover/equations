@@ -1305,6 +1305,7 @@ let define_programs (type a) ~pm env evd udecl is_recursive fixprots (flags : fl
     hook ~pm p term_info
   in
   let all_hook ~pm hook recobls sigma =
+    let sigma = demote_declared_universes sigma in
     let sigma = Evd.minimize_universes sigma in
     let sigma = Evarutil.nf_evar_map_undefined sigma in
     let uentry = UState.check_univ_decl ~poly:flags.poly (Evd.ustate sigma) udecl in

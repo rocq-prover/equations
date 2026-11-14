@@ -298,6 +298,14 @@ let make_definition ?(check = true) ?opaque ?(poly=PolyFlags.default) evm ?types
   let univs = Evd.univ_entry ~poly evm in
   evm0, evm, Declare.definition_entry ~univs ?types:typ body
 
+let demote_declared_universes sigma =
+  let univs, _ = Evd.universe_context_set sigma in
+  let declared = match UGraph.check_declared_universes (Environ.universes (Global.env ())) univs with
+  | Ok () -> univs
+  | Error undeclared -> Univ.Level.Set.diff univs undeclared
+  in
+  Evd.set_ustate sigma (UState.demote_global_univs (declared, Univ.UnivConstraints.empty) (Evd.ustate sigma))
+
 let declare_constant ?check id body ty ~poly ~kind evd =
   let evm0, evm, ce = make_definition ?check ~opaque:false ~poly evd ?types:ty body in
   let cst = Declare.declare_constant ~name:id (Declare.DefinitionEntry ce) ~kind in
@@ -305,7 +313,9 @@ let declare_constant ?check id body ty ~poly ~kind evd =
   if PolyFlags.univ_poly poly then
     let cstr = EConstr.(mkConstU (cst, EInstance.make (UVars.UContext.instance (Evd.to_universe_context evm)))) in
     cst, (evm0, cstr)
-  else cst, (evm0, EConstr.UnsafeMonomorphic.mkConst cst)
+  else
+    let evm0 = Evd.set_ustate evm0 (UState.demote_global_univs (Evd.universe_context_set evm) (Evd.ustate evm0)) in
+    cst, (evm0, EConstr.UnsafeMonomorphic.mkConst cst)
 
 let eval_mfix = function
 | Syntax.MutFix (progs, indexes, decl) ->

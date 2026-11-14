@@ -179,6 +179,8 @@ val make_definition :
    This allows easy construction of tactics that generate multiple related constants,
    even in the polymorphic case. *)
 
+val demote_declared_universes : Evd.evar_map -> Evd.evar_map
+
 val declare_constant :
   ?check:bool ->
   Id.t ->
