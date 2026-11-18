@@ -1215,6 +1215,10 @@ let solve_equations_obligations_program ~pm (flags : flags) recids loc i sigma h
      *   Array.map_to_list (fun (id, ty, loc, s, d, tac) -> Libnames.qualid_of_ident id) obls in
      * Extraction_plugin.Table.extraction_inline true l; *)
     (* Problem is restrict in defineObl.define_program gets rid of universes in the obligations now... *)
+    (* [uctx] is the universe state of the program, which extends the one of [sigma]: in
+       the monomorphic case, the unification levels replaced by global levels in its
+       declarations are defined to them *)
+    let sigma = if PolyFlags.univ_poly poly then sigma else Evd.set_ustate sigma uctx in
     let evd = ref sigma in
     let evc id =
       let t = EConstr.of_constr (List.assoc_f Id.equal id obls) in

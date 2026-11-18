@@ -152,9 +152,9 @@ let derive_subterm ~pm env sigma ~poly (ind, u as indu) =
   in
   let univs, ubinders = Evd.univ_entry ~poly sigma in
   let usubst, uctx = match univs with
-  | UState.Monomorphic_entry ctx ->
+  | UState.Monomorphic_entry (ctx, subst) ->
     let () = Global.push_context_set ctx in
-    UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
+    (Sorts.QVar.Map.empty, subst), Entries.Monomorphic_ind_entry
   | UState.Polymorphic_entry uctx ->
     let uinst, auctx = UVars.abstract_universes uctx in
     UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry auctx
@@ -411,7 +411,6 @@ let derive_below env sigma ~poly (ind,univ as indu) =
   let bodyb = replace_vars evd [belowid, belowB] bodyb in
   let bodyb = Evarutil.nf_evar evd bodyb in
   let id = add_prefix "below_" (Nametab.basename_of_global (GlobRef.IndRef ind)) in
-  let evd = if PolyFlags.univ_poly poly then evd else Evd.from_env (Global.env ()) in
   ignore(declare_constant id bodyb None ~poly evd
 	   ~kind:Decls.(IsDefinition Definition))
 

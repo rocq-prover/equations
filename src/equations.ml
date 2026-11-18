@@ -42,6 +42,10 @@ let define_unfolding_eq ~pm env evd (flags : flags)  p unfp prog prog' ei hook =
   let funf_cst = match info'.term_id with GlobRef.ConstRef c -> c | _ -> assert false in
   let () = if PolyFlags.univ_poly flags.poly then evd := Evd.from_ustate info'.term_ustate in
   let funfc = e_new_global evd info'.term_id in
+  (* The ustate of the programs relates their unification levels to global levels *)
+  let mono_evd () =
+    Evd.update_sigma_univs (Environ.universes (Global.env ())) (Evd.from_ustate info'.term_ustate)
+  in
   let unfold_eq_id = add_suffix (program_id unfp) "_eq" in
   let hook_eqs _ pm =
     Global.set_strategy (Conv_oracle.EvalConstRef funf_cst) Conv_oracle.transparent;
@@ -58,8 +62,7 @@ let define_unfolding_eq ~pm env evd (flags : flags)  p unfp prog prog' ei hook =
       in
       PathMap.iter decl ei.Principles_proofs.equations_where_map
     in
-    let env = Global.env () in
-    let () = if not (PolyFlags.univ_poly flags.poly) then evd := (Evd.from_env env) in
+    let () = if not (PolyFlags.univ_poly flags.poly) then evd := mono_evd () in
     let prog' = { program_cst = funf_cst;
                   program_split_info = info }
     in
@@ -74,7 +77,7 @@ let define_unfolding_eq ~pm env evd (flags : flags)  p unfp prog prog' ei hook =
                           equations_prob = ei.equations_prob }
     in hook ~pm (p, Some unfp, prog', eqninfo) unfold_eq_id
   in
-  let () = if not (PolyFlags.univ_poly flags.poly) then (evd := Evd.from_env (Global.env ())) in
+  let () = if not (PolyFlags.univ_poly flags.poly) then evd := mono_evd () in
   let sign = program_sign unfp in
   let arity = program_arity unfp in
   let stmt = it_mkProd_or_LetIn
@@ -117,13 +120,10 @@ let define_unfolding_eq ~pm env evd (flags : flags)  p unfp prog prog' ei hook =
 
 let define_principles ~pm (flags : flags) rec_type progs =
   let env = Global.env () in
-  let evd = ref (Evd.from_env env) in
-  let () =
-    if PolyFlags.univ_poly flags.poly then
-      let ustate = (snd (List.hd progs)).program_split_info.term_ustate in
-      let () = evd := Evd.merge_ustate !evd ustate in ()
-    else ()
-  in
+  (* The universe state of the programs: in the monomorphic case, it defines their
+     unification levels to the global levels they were replaced by *)
+  let ustate = (snd (List.hd progs)).program_split_info.term_ustate in
+  let evd = ref (Evd.update_sigma_univs (Environ.universes env) (Evd.from_ustate ustate)) in
   let pm, progs' = Principles.unfold_programs ~pm env evd flags rec_type progs in
   match progs' with
   | [p, Some (unfp, cpi'), cpi, eqi] ->

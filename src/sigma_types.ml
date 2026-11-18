@@ -265,7 +265,6 @@ let declare_sig_of_ind env sigma ~poly (ind,u) =
         ~poly sigma
 	~kind:Decls.(IsDefinition Definition)
   in
-  let sigma = if not (PolyFlags.univ_poly poly) then Evd.from_env (Global.env ()) else sigma in
   let sigma, c = signature_class sigma in
   let signature_id = add_suffix indid "_Signature" in
   let inst = 
