@@ -1,7 +1,9 @@
+(include_subdirs qualified)
 (rocq.theory
  ; This determines the -R flag
  (name Equations)
  (package rocq-equations)
  (synopsis "Equations Plugin")
  (plugins rocq-runtime.plugins.extraction rocq-equations.plugin)
+ (theories Stdlib)
  (modules :standard))
