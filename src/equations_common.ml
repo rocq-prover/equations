@@ -296,7 +296,7 @@ let make_definition ?(check = true) ?opaque ?(poly=PolyFlags.default) evm ?types
   let used = Univ.Level.Set.union used used' in
   let evm = Evd.restrict_ustate evm used in
   let univs = Evd.univ_entry ~poly evm in
-  evm0, evm, Declare.definition_entry ~univs ?types:typ body
+  evm0, evm, univs, Declare.definition_entry ~univs ?types:typ body
 
 let demote_declared_universes sigma =
   let univs, _ = Evd.universe_context_set sigma in
@@ -307,14 +307,14 @@ let demote_declared_universes sigma =
   Evd.set_ustate sigma (UState.demote_global_univs (declared, Univ.UnivConstraints.empty) (Evd.ustate sigma))
 
 let declare_constant ?check id body ty ~poly ~kind evd =
-  let evm0, evm, ce = make_definition ?check ~opaque:false ~poly evd ?types:ty body in
+  let evm0, evm, univs, ce = make_definition ?check ~opaque:false ~poly evd ?types:ty body in
   let cst = Declare.declare_constant ~name:id (Declare.DefinitionEntry ce) ~kind in
   Flags.if_verbose Feedback.msg_info (str((Id.to_string id) ^ " is defined"));
   if PolyFlags.univ_poly poly then
     let cstr = EConstr.(mkConstU (cst, EInstance.make (UVars.UContext.instance (Evd.to_universe_context evm)))) in
     cst, (evm0, cstr)
   else
-    let evm0 = Evd.set_ustate evm0 (UState.demote_global_univs (Evd.universe_context_set evm) (Evd.ustate evm0)) in
+    let evm0 = Evd.set_ustate evm0 (UState.demote_global_univ_entry (fst univs) (Evd.ustate evm0)) in
     cst, (evm0, EConstr.UnsafeMonomorphic.mkConst cst)
 
 let eval_mfix = function
@@ -350,7 +350,7 @@ let declare_mutual ~poly mutual evd =
   !evd, mutual
 
 let make_definition ?opaque ?(poly=PolyFlags.default) evm ?types b =
-  let evm', _, t = make_definition ?opaque ~poly evm ?types b in
+  let evm', _, _, t = make_definition ?opaque ~poly evm ?types b in
   evm', t
 
 let instance_constructor (cl,u) args =

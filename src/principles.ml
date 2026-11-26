@@ -50,7 +50,7 @@ let pi2 (_,y,_) = y
 (** Objects to keep information about equations *)
 
 let cache_rew_rule (base, gr, l2r) =
-  let gr, ((qvars, univs), csts) = UnivGen.fresh_global_instance (Global.env()) gr in
+  let _, (gr, ((qvars, univs), csts)) = UnivGen.fresh_global_instance UnivGen.Supply.empty (Global.env()) gr in
   let () = if not (Sorts.QVar.Set.is_empty qvars) then
       CErrors.user_err Pp.(str "Sort polymorphic autorewrite not supported.")
   in
@@ -1246,14 +1246,17 @@ let declare_funelim ~pm info env evd is_rec protos progs
   let elim = comb in
   let elimc, elimty =
     let elimty, uctx = Typeops.type_of_global_in_context (Global.env ()) elim in
-    let () = evd := Evd.from_env (Global.env ()) in
+    let () =
+      (* In the polymorphic case, [ectx], the universe state of the functional induction
+         lemma, extends the one of the programs in which ind_stmts and all_stmts are derived;
+         universe unification will take care of unifying the eliminator's fresh instance
+         with the universes of the constant and the functional induction lemma.
+         In the monomorphic case, keep the equalities between the unification levels of
+         ind_stmts and all_stmts and global levels. *)
+      let ustate = if is_polymorphic info then ectx else Evd.ustate !evd in
+      evd := Evd.update_sigma_univs (Environ.universes (Global.env ())) (Evd.from_ustate ustate)
+    in
     if is_polymorphic info then
-      (* We merge the contexts of the term and eliminator in which
-         ind_stmts and all_stmts are derived, universe unification will
-         take care of unifying the eliminator's fresh instance with the
-         universes of the constant and the functional induction lemma. *)
-      let () = evd := Evd.merge_ustate !evd info.term_ustate in
-      let () = evd := Evd.merge_ustate !evd ectx in
       let sigma, elimc = Evd.fresh_global (Global.env ()) !evd elim in
       let elimty = Retyping.get_type_of env sigma elimc in
       let () = evd := sigma in
@@ -1407,7 +1410,9 @@ let declare_funind ~pm info alias env evd is_rec protos progs
   let () = evd := evm in
   let to_constr c = collapse_term_qualities (Evd.ustate !evd) (EConstr.to_constr !evd c) in
   let stmt = to_constr statement and f = to_constr f in
-  let uctx = Evd.ustate (if PolyFlags.univ_poly poly then !evd else Evd.from_env (Global.env ())) in
+  (* In the monomorphic case, the unification levels of [stmt] are equal to
+     global levels in [!evd] *)
+  let uctx = Evd.ustate !evd in
   let launch_ind ~pm tactic =
     let pm =
       let cinfo = Declare.CInfo.make ~name:indid ~typ:stmt () in
@@ -1689,9 +1694,9 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
     in
     let univs, ubinders = Evd.univ_entry ~poly sigma in
     let usubst, uctx = match univs with
-    | UState.Monomorphic_entry ctx ->
+    | UState.Monomorphic_entry (ctx, subst) ->
       let () = Global.push_context_set ctx in
-      UVars.empty_sort_subst, Entries.Monomorphic_ind_entry
+      (Sorts.QVar.Map.empty, subst), Entries.Monomorphic_ind_entry
     | UState.Polymorphic_entry uctx ->
       let uinst, auctx = UVars.abstract_universes uctx in
       UVars.make_instance_subst uinst, Entries.Polymorphic_ind_entry auctx
@@ -1760,6 +1765,9 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
         inds
     in
     let info = { term_info = info; pathmap = !fnind_map; wheremap } in
+    (* The unification levels of the inductive were replaced by global levels *)
+    let () = evd := Evd.set_ustate !evd (UState.demote_global_univ_entry univs (Evd.ustate !evd)) in
+    let () = evd := Evd.update_sigma_univs (Environ.universes (Global.env ())) !evd in
     declare_funind ~pm info alias (Global.env ()) evd rec_info protos progs
                    ind_stmts all_stmts sign inds kn comb sort
                    f p.program_splitting
@@ -1771,10 +1779,14 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
           definitions once and for all. *)
       let uctx = Evd.sort_context_set !evd in
       let (_qs, us), (_qcst, ucst) = uctx in
-      let () = Global.push_context_set (us, ucst) in
-      evd := Evd.from_env (Global.env ())
+      (* Unification levels become global levels, equal to them in [evd] *)
+      let ctx, subst = UnivGen.globalize_context_set (us, ucst) in
+      let () = Global.push_context_set ctx in
+      let entry = UState.Monomorphic_entry (ctx, subst) in
+      evd := Evd.from_ustate (UState.demote_global_univ_entry entry (Evd.ustate !evd))
     else ()
   in
+  let base_evd = !evd in
   let eqns = CArray.map_of_list (fun (_, _, stmts) -> Array.make (List.length stmts) false) ind_stmts in
   let proof pm (j, (_, alias, path, sign, arity, pats, refs, refine), stmts) =
     let id = path_id path in
@@ -1817,7 +1829,8 @@ let build_equations ~pm with_ind env evd ?(alias:alias option) rec_info progs =
       in
       let () =
         (* Refresh at each equation, accumulating known constraints. *)
-        if not (PolyFlags.univ_poly poly) then evd := Evd.from_env (Global.env ())
+        if not (PolyFlags.univ_poly poly) then
+          evd := Evd.update_sigma_univs (Environ.universes (Global.env ())) base_evd
         else ()
       in
       (* FIXME: try to implement a sane handling of universe state threading *)
